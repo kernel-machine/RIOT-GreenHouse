@@ -13,7 +13,7 @@ typedef struct dht11_device_s{
 
 void dht11_init(dht11_device_t * device, gpio_t pin);
 void dht11_update(dht11_device_t * device);
-float dht11_get_temp(dht11_device_t * device);
-float dht11_get_hum (dht11_device_t * device);
+double dht11_get_temp(dht11_device_t * device);
+double dht11_get_hum (dht11_device_t * device);
 
 #endif //RIOT_DHT11_H

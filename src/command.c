@@ -8,7 +8,7 @@ int print_temperature(int argc, char **argv) {
     (void) argc;
     (void) argv;
     dht11_device_t *dht = device_manager_get_device(TEMP_HUM);
-    printf("Temperature %d\n", dht->last_temp);
+    printf("Temperature %d °C\n",(int)dht11_get_temp(dht));
     return 0;
 }
 
@@ -16,7 +16,7 @@ int print_humidity(int argc, char **argv) {
     (void) argc;
     (void) argv;
     dht11_device_t *dht = device_manager_get_device(TEMP_HUM);
-    printf("Humidity %d\n", dht->last_hum);
+    printf("Humidity %d %%\n",(int) dht11_get_hum(dht));
     return 0;
 }
 
