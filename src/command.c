@@ -8,7 +8,7 @@ int print_temperature(int argc, char **argv) {
     (void) argc;
     (void) argv;
     dht11_device_t *dht = device_manager_get_device(TEMP_HUM);
-    printf("Temperature %d °C\n",(int)dht11_get_temp(dht));
+    printf("Temperature %d °C\n", (int) dht11_get_temp(dht));
     return 0;
 }
 
@@ -16,7 +16,7 @@ int print_humidity(int argc, char **argv) {
     (void) argc;
     (void) argv;
     dht11_device_t *dht = device_manager_get_device(TEMP_HUM);
-    printf("Humidity %d %%\n",(int) dht11_get_hum(dht));
+    printf("Humidity %d %%\n", (int) dht11_get_hum(dht));
     return 0;
 }
 
@@ -33,7 +33,7 @@ int print_water_level(int argc, char **argv) {
     (void) argc;
     (void) argv;
     analog_device_t *device = device_manager_get_device(WATER_LEVEL);
-    printf("Water level %ld\n", analog_device_get_data(device));
+    printf("Water level %d\n", device->scaled);
     return 0;
 }
 
@@ -41,7 +41,7 @@ int print_soil_moisture(int argc, char **argv) {
     (void) argc;
     (void) argv;
     analog_device_t *device = device_manager_get_device(SOIL_MOISTURE);
-    printf("Soil level %ld\n", analog_device_get_data(device));
+    printf("Soil level %d\n", device->scaled);
     return 0;
 }
 

@@ -11,13 +11,15 @@
 #include "../devices/servo_device.h"
 
 #include "command.h"
-#include "sensor_scan.h"
-#include "timer_conversion.h"
+#include "gh_scheduler.h"
+#include "convertion.h"
+#include "logic_condition.h"
 
 #include "../RIOT/sys/include/xtimer.h"
 #include "../RIOT/core/include/thread.h"
 
 #include "stdio.h"
+#include "stdlib.h"
 
 
 dht11_device_t dht;
@@ -27,6 +29,33 @@ digital_out_t pump;
 digital_out_t water_level_power;
 
 servo_device_t servo;
+
+void toggle_pump(int *a) {
+    if (a == NULL)
+        return;
+    else if (*a == 0)
+        digital_out_disable(&pump);
+    else if (*a == 1)
+        digital_out_enable(&pump);
+    else {
+        int ms = ML2MS(*a);
+        printf("ENABLE_PUMP_FOR %d\n", ms);
+        digital_out_enable_for_x_ms(&pump, ms);
+    }
+}
+
+void toggle_roof(int *a) {
+    if (a == NULL)
+        return;
+    else if (*a == 0)
+        servo_device_set_position(&servo, 0);
+    else if (*a == 1)
+        servo_device_set_position(&servo, 180);
+
+    //printf("SERVO %d\n", *a);
+
+}
+
 
 void gh_init(void) {
     xtimer_init();
@@ -49,10 +78,32 @@ void gh_init(void) {
     device_manager_add(SERVO, &servo);
 
     device_manager_set_scan_interval(TEMP_HUM, S2MS(2));
-    device_manager_set_scan_interval(WATER_LEVEL, S2MS(2));
+    device_manager_set_scan_interval(WATER_LEVEL, S2MS(1));
     device_manager_set_scan_interval(SOIL_MOISTURE, S2MS(2));
+    device_manager_set_scan_interval(PUMP, 200);
 
-    start_sensor_scan();
+    int water_level_threshold = 15;
+    int soil_moisture_threshold = 40;
+    int hum_threshold = 350;
+    int ms = 1000;
+    int enable = 1;
+    int disable = 0;
+
+    const int *water_level_pointer = (const int *) &(water_level.scaled);
+    const int *soil_moisture_pointer = (const int *) &(soil_moisture.scaled);
+    const int *green_house_hum_ptr = &(dht.last_hum);
+
+
+    const logic_condition_t *lc_enable_pump =
+            logic_condition_add(water_level_pointer, GREATER, &water_level_threshold, NULL, NULL, NULL);
+
+    logic_condition_add(soil_moisture_pointer, LESS, &soil_moisture_threshold, toggle_pump, &ms,
+                        lc_enable_pump);
+
+    logic_condition_add(green_house_hum_ptr, GREATER, &hum_threshold, toggle_roof, &enable, NULL);
+    logic_condition_add(green_house_hum_ptr, LESS, &hum_threshold, toggle_roof, &disable, NULL);
+
+    green_house_scheduler_start();
 
     command_wait_for_command();
 }

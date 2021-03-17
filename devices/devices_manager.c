@@ -68,6 +68,9 @@ void device_manager_scan(device_type_e device_type) {
         case TEMP_HUM:
             dht11_update(device);
             break;
+        case PUMP:
+            digital_out_update(device);
+            break;
         default:
             break;
     }

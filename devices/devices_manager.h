@@ -13,7 +13,7 @@
 #include "dht11.h"
 #include "digital_out.h"
 
-#include "../src/timer_conversion.h"
+#include "../src/convertion.h"
 
 typedef enum device_type {
     PUMP = 0,

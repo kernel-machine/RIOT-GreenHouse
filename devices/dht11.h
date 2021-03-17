@@ -7,8 +7,8 @@
 
 typedef struct dht11_device_s{
     dht_t dht;
-    int16_t last_temp;
-    int16_t last_hum;
+    int last_temp;
+    int last_hum;
 }dht11_device_t;
 
 void dht11_init(dht11_device_t * device, gpio_t pin);

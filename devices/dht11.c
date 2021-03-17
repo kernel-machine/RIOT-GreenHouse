@@ -13,7 +13,10 @@ void dht11_init(dht11_device_t *device, gpio_t pin) {
 }
 
 void dht11_update(dht11_device_t *device) {
-    dht_read(&(device->dht), &(device->last_temp), &(device->last_hum));
+    int16_t temp,hum;
+    dht_read(&(device->dht), &temp, &hum);
+    device->last_hum=hum;
+    device->last_temp=temp;
 }
 
 double dht11_get_temp(dht11_device_t *device) {
