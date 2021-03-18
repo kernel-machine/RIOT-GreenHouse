@@ -93,12 +93,17 @@ void gh_init(void) {
     const int *soil_moisture_pointer = (const int *) &(soil_moisture.scaled);
     const int *green_house_hum_ptr = &(dht.last_hum);
 
+    logic_condition_init();
 
-    const logic_condition_t *lc_enable_pump =
+    const logic_condition_t *lc_enable_pump1 =
             logic_condition_add(water_level_pointer, GREATER, &water_level_threshold, NULL, NULL, NULL);
 
-    logic_condition_add(soil_moisture_pointer, LESS, &soil_moisture_threshold, toggle_pump, &ms,
-                        lc_enable_pump);
+    const logic_condition_t *lc_enable_pump2 = logic_condition_add(soil_moisture_pointer, LESS,
+                                                                   &soil_moisture_threshold,
+                                                                   toggle_pump, &ms,
+                                                                   lc_enable_pump1);
+
+    logic_condition_set_interval(lc_enable_pump2,S2MS(60));
 
     logic_condition_add(green_house_hum_ptr, GREATER, &hum_threshold, toggle_roof, &enable, NULL);
     logic_condition_add(green_house_hum_ptr, LESS, &hum_threshold, toggle_roof, &disable, NULL);

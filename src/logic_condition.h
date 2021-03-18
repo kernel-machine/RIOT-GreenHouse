@@ -6,6 +6,7 @@
 #define RIOT_GREENHOUSE_LOGIC_CONDITION_H
 
 #include "stdlib.h"
+#include "../RIOT/sys/include/xtimer.h"
 
 typedef enum {
     LESS,
@@ -21,22 +22,23 @@ typedef struct logic_condition_s {
     const int *operand_b;
     operator_e operator;
     int last_evaluation;
+    time_t next_schedule;
+    time_t interval;
 
     const int *parameter;
 
     void (*action)(int *);
 
-    const void *to_check;
+    const void *next;
 } logic_condition_t;
+
+void logic_condition_init(void);
 
 const logic_condition_t *
 logic_condition_add(const int *operand_a, operator_e operator, const int *operand_b, void(*action)(int *),
                     const int *parameter,
-                    const logic_condition_t *to_check);
-
-int _logic_condition_evaluate_operand(const int *operand_a,const int *operand_b, operator_e operator);
-
-int _logic_condition_evaluate_condition(const logic_condition_t *condition);
+                    const logic_condition_t *next);
+void logic_condition_set_interval(const logic_condition_t *condition, time_t interval_ms);
 
 void logic_condition_update(void);
 
