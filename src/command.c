@@ -1,8 +1,15 @@
 //
 // Created by Luca Giovannesi.
 //
-
 #include "command.h"
+
+#include "../devices/digital_out.h"
+#include "../devices/dht11.h"
+#include "../devices/analog_device.h"
+#include "../devices/devices_manager.h"
+#include "../devices/servo_device.h"
+
+#include "../RIOT/sys/include/shell.h"
 
 int print_temperature(int argc, char **argv) {
     (void) argc;
@@ -59,18 +66,17 @@ int set_servo_position(int argc, char **argv) {
     return 0;
 }
 
-static const shell_command_t commands[] = {
+static const shell_command_t shell_commands[] = {
         {"temp",        "print env. temperature", print_temperature},
         {"hum",         "print env. humidity",    print_humidity},
         {"toggle_pump", "Toggle water pump",      pump_toggle},
         {"soil",        "Print soil humidity",    print_soil_moisture},
         {"level",       "Print water level",      print_water_level},
         {"servo",       "Move servo",             set_servo_position},
-
         {NULL,          NULL,                     NULL}
 };
 
 void command_wait_for_command(void) {
     char line_buf[SHELL_DEFAULT_BUFSIZE];
-    shell_run(commands, line_buf, SHELL_DEFAULT_BUFSIZE);
+    shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
 }
