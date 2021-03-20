@@ -9,12 +9,6 @@
 #include "stdlib.h"
 #include "../RIOT/sys/include/xtimer.h"
 
-#include "analog_device.h"
-#include "dht11.h"
-#include "digital_out.h"
-
-#include "../src/convertion.h"
-
 typedef enum device_type {
     PUMP = 0,
     WATER_LEVEL = 1,
@@ -29,6 +23,7 @@ typedef struct device_specs_s {
     device_type_e device_type;
     bool is_analog;
     bool is_sensor;
+    char * name;
 } device_specs_t;
 
 typedef struct device_s {
@@ -55,4 +50,5 @@ bool device_manager_must_be_scanned(device_type_e device_type);
 
 void device_manager_scan(device_type_e device_type);
 
+char *device_manager_get_device_name(device_type_e device_type);
 #endif //GREENHOUSE_DEVICE_H

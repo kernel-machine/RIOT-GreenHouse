@@ -14,6 +14,7 @@
 #include "gh_scheduler.h"
 #include "convertion.h"
 #include "logic_condition.h"
+#include "emcute_connection.h"
 
 #include "../RIOT/sys/include/xtimer.h"
 #include "../RIOT/core/include/thread.h"
@@ -55,7 +56,7 @@ void toggle_roof(int *a) {
     //printf("SERVO %d\n", *a);
 
 }
-
+#include "emcute_connection.h"
 
 void gh_init(void) {
     xtimer_init();
@@ -82,6 +83,7 @@ void gh_init(void) {
     device_manager_set_scan_interval(SOIL_MOISTURE, S2MS(2));
     device_manager_set_scan_interval(PUMP, 200);
 
+    //Logic condition definitions
     int water_level_threshold = 15;
     int soil_moisture_threshold = 40;
     int hum_threshold = 350;
@@ -103,11 +105,15 @@ void gh_init(void) {
                                                                    toggle_pump, &ms,
                                                                    lc_enable_pump1);
 
-    logic_condition_set_interval(lc_enable_pump2,S2MS(60));
+    logic_condition_set_interval(lc_enable_pump2,S2MS(2));
 
     logic_condition_add(green_house_hum_ptr, GREATER, &hum_threshold, toggle_roof, &enable, NULL);
     logic_condition_add(green_house_hum_ptr, LESS, &hum_threshold, toggle_roof, &disable, NULL);
+    //End logic condition
 
+    init_connection();
+
+    //Starts to scan sensor and logic conditions
     green_house_scheduler_start();
 
     command_wait_for_command();
