@@ -15,16 +15,15 @@ The advantages of having an IoT greenhouse are:
 
 ## Sensors and actuators used
 The sensor used are:
-- DHT11, a digital sensor used to measure air temperature and humidty.
-- SOIL MOISTURE sensor, an analog sensor used to measure the SOIL MOISTURE
+- DHT11, a digital sensor used to measure air temperature and humidity.
+- SOIL MOISTURE sensor, an analog sensor used to measure the soil moisture
 - WATER LEVEL sensor, an analog sensor used to measure the water level inside the tank
 
 Tha actuators are:
 - RELAY, used to toggle a 230V pump
 - SERVO MOTOR, used to open or close a windows on the greenhouse
 
-All sensor sensor are periodically fetched, the DHT11 and soil moisture sensor are fetched to 
-detect when perform action, while the water level sensor is fetched to publish its value on user interface.
+All sensor sensor are periodically fetched, with the interval setted in `Makefile.conf.include`.
 
 ### Actions
 The SERVO MOTOR the open the window is activated by this rule:
@@ -82,7 +81,13 @@ percentage by software.
        
 Water level, Temperature, Humidity and Soil moisture are published on MQTT-SN broker. 
 
-It is possible tune parameters and scan interval editing the values in `Makefile.conf.include`
+It is possible to tune parameters and scan interval editing the values in `Makefile.conf.include`
+
+All sensor are fetched with a specific interval and the actions are executed with a different timing
+with the last value fetched.
+
+The action that open/close the windows is checked every sensors fetch, while the action that toggle the pump
+is checked every 30 minutes (by default).
 
 ## Web Interface
 With the web interface is possible to visualize the last hour of received data in charts,
