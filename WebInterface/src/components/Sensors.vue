@@ -10,10 +10,34 @@
     <MinMaxAvg title="Soil moisture" unit="%" :color="this.SOIL_COLOR"
                v-bind:data="this.$data.received_data.map(x=>x.soil)"></MinMaxAvg>
     <br>
-    <p><b>Last update: </b>{{ this.formatTimestamp(this.$data.last_update.timestamp) }}</p>
-    <p><b>Water level: </b>{{ this.$data.last_update.water_level }}%</p>
-    <p><b>Window: </b>{{ this.$data.last_update.servo === 180 ? 'open' : 'close' }}</p>
-    <p><b>Pump state: </b>{{ this.$data.last_update.pump === 1 ? 'on' : 'off' }}</p>
+    <div>
+      <p><b>Last update: </b>{{ this.formatTimestamp(this.$data.last_update.timestamp) }}</p>
+      <table style="margin: auto">
+        <tr>
+          <td>
+            <p><b>Water level: </b>{{ this.$data.last_update.water_level }}%</p>
+          </td>
+          <td>
+            <p><b>Window: </b>{{ this.$data.last_update.servo === 180 ? 'open' : 'close' }}</p>
+          </td>
+          <td>
+            <p><b>Pump state: </b>{{ this.$data.last_update.pump === 1 ? 'on' : 'off' }}</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <p><b>Temperature: </b>{{ this.$data.last_update.temperature }} °C</p>
+          </td>
+          <td>
+            <p><b>Humidity: </b>{{ this.$data.last_update.humidity }} %</p>
+          </td>
+          <td>
+            <p><b>Soil moisture: </b>{{ this.$data.last_update.soil }} %</p>
+          </td>
+        </tr>
+      </table>
+    </div>
 
     <ButtonPanel></ButtonPanel>
     <div v-if="this.$data.received_data.length>0" class="flex_container">
@@ -105,10 +129,15 @@ export default {
   flex-direction: row;
 }
 
+td {
+  padding: 10px;
+}
+
 @media screen and (max-width: 1000px) {
   .graph {
     flex: 100%;
   }
+
   .flex_container {
     display: flex;
     flex-direction: column;
