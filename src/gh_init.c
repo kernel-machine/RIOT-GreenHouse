@@ -23,6 +23,15 @@
 #include "stdlib.h"
 #include "string.h"
 
+#define DHT_PIN                 GPIO_PIN(PORT_A, 10)    //D2
+#define WATER_LEVEL_ADC         ADC_LINE(1)
+#define SOIL_MOISTURE_ADC       ADC_LINE(2)
+#define RELAY_PIN               GPIO_PIN(PORT_A, 8)     //D7
+#define WATER_LEVEL_POWER_PIN   GPIO_PIN(PORT_B, 4)     //D5
+#define SERVO_CHANNEL           1
+#define SERVO_PWM               0
+
+#define MQTT_PUBLISH_RATE       60  //One message every 60 seconds
 
 dht11_device_t dht;
 analog_device_t water_level;
@@ -138,15 +147,15 @@ void publish_topic(void) {
 void gh_init(void) {
     xtimer_init();
 
-    dht11_init(&dht, GPIO_PIN(PORT_A, 10));
+    dht11_init(&dht, DHT_PIN);
 
-    analog_device_init(&water_level, ADC_LINE(1));
-    analog_device_init(&soil_moisture, ADC_LINE(2));
+    analog_device_init(&water_level, WATER_LEVEL_ADC);
+    analog_device_init(&soil_moisture, SOIL_MOISTURE_ADC);
 
-    digital_out_init(&pump, GPIO_PIN(PORT_A, 8));
-    digital_out_init(&water_level_power, GPIO_PIN(PORT_B, 4));
+    digital_out_init(&pump, RELAY_PIN);
+    digital_out_init(&water_level_power, WATER_LEVEL_POWER_PIN);
 
-    servo_device_init(&servo, 0, 1);
+    servo_device_init(&servo, SERVO_PWM, SERVO_CHANNEL);
 
     device_manager_add(TEMP_HUM, &dht);
     device_manager_add(WATER_LEVEL, &water_level);
@@ -191,7 +200,7 @@ void gh_init(void) {
     green_house_scheduler_init();
     init_connection();
 
-    green_house_add_function(S2MS(60), publish_topic);
+    green_house_add_function(S2MS(MQTT_PUBLISH_RATE), publish_topic);
 
     //Starts to scan sensor and logic conditions
     green_house_scheduler_start();
