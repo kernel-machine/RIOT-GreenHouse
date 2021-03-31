@@ -61,7 +61,11 @@ int set_servo_position(int argc, char **argv) {
     }
     servo_device_t *device = device_manager_get_device(SERVO);
     int degree = atoi(argv[1]);
-    servo_device_set_position(device, degree);
+    servo_device_set_manual_override(device,degree);
+    if(degree==-1){
+        //servo_device_set_position(device, degree);
+        servo_device_clear_manual_override(device);
+    }
     printf("Servo setted to %d\n", degree);
     return 0;
 }

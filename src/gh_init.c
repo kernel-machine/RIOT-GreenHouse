@@ -21,6 +21,7 @@
 
 #include "stdio.h"
 #include "stdlib.h"
+#include "string.h"
 
 
 dht11_device_t dht;
@@ -48,15 +49,92 @@ void toggle_pump(int *a) {
 void toggle_roof(int *a) {
     if (a == NULL)
         return;
+    if (servo_device_is_manual_override(&servo))
+        return;
+
     else if (*a == 0)
         servo_device_set_position(&servo, 0);
     else if (*a == 1)
         servo_device_set_position(&servo, 180);
-
-    //printf("SERVO %d\n", *a);
-
 }
-#include "emcute_connection.h"
+
+
+#define BUFFER_SIZE 1024
+char str[BUFFER_SIZE];
+char *topic_name = "TEMP";
+uint32_t message_id = 0;
+
+
+void publish_topic(void) {
+    const char out_size = 16;
+    char out[out_size];
+
+    memset(str, 0, BUFFER_SIZE);
+    strcat(str, "{");
+
+    memset(out, 0, out_size);
+    strcat(str, "\"message_id\":");
+    sprintf(out, "%d\n", (int) US2S(xtimer_now_usec()));
+    strcat(str, out);
+    strcat(str, ",");
+
+    for (int i = 0; i < DEVICE_NUMBER; i++) {
+        void *device = device_manager_get_device((device_type_e) i);
+
+
+        switch (i) {
+            case PUMP:
+                memset(out, 0, out_size);
+                strcat(str, "\"pump\":");
+                sprintf(out, "%d\n", digital_out_get_current_state(device));
+                strcat(str, out);
+                strcat(str, ",");
+                break;
+            case WATER_LEVEL:
+                memset(out, 0, out_size);
+                strcat(str, "\"water_level\":");
+                sprintf(out, "%d\n", ((analog_device_t *) device)->scaled);
+                strcat(str, out);
+                strcat(str, ",");
+                break;
+            case SOIL_MOISTURE:
+                memset(out, 0, out_size);
+                strcat(str, "\"soil\":");
+                sprintf(out, "%d\n", ((analog_device_t *) device)->scaled);
+                strcat(str, out);
+                strcat(str, ",");
+                break;
+            case TEMP_HUM:
+                memset(out, 0, out_size);
+                strcat(str, "\"temp\":");
+                sprintf(out, "%d\n", (int) dht11_get_temp(device));
+                strcat(str, out);
+                strcat(str, ",");
+
+                memset(out, 0, out_size);
+                strcat(str, "\"hum\":");
+                sprintf(out, "%d\n", (int) dht11_get_hum(device));
+                strcat(str, out);
+                strcat(str, ",");
+                break;
+            case SERVO:
+                memset(out, 0, out_size);
+                strcat(str, "\"servo\":");
+                sprintf(out, "%d\n", (int) servo_device_get_position(device));
+                strcat(str, out);
+                break;
+            default:
+                break;
+
+        }
+
+
+    }
+
+    strcat(str, "}");
+    emcute_publish(str);
+}
+
 
 void gh_init(void) {
     xtimer_init();
@@ -78,9 +156,9 @@ void gh_init(void) {
     device_manager_add(PUMP, &pump);
     device_manager_add(SERVO, &servo);
 
-    device_manager_set_scan_interval(TEMP_HUM, S2MS(2));
-    device_manager_set_scan_interval(WATER_LEVEL, S2MS(1));
-    device_manager_set_scan_interval(SOIL_MOISTURE, S2MS(2));
+    device_manager_set_scan_interval(TEMP_HUM, S2MS(20));
+    device_manager_set_scan_interval(WATER_LEVEL, S2MS(20));
+    device_manager_set_scan_interval(SOIL_MOISTURE, S2MS(20));
     device_manager_set_scan_interval(PUMP, 200);
 
     //Logic condition definitions
@@ -105,13 +183,16 @@ void gh_init(void) {
                                                                    toggle_pump, &ms,
                                                                    lc_enable_pump1);
 
-    logic_condition_set_interval(lc_enable_pump2,S2MS(2));
+    logic_condition_set_interval(lc_enable_pump2, S2MS(30));
 
     logic_condition_add(green_house_hum_ptr, GREATER, &hum_threshold, toggle_roof, &enable, NULL);
     logic_condition_add(green_house_hum_ptr, LESS, &hum_threshold, toggle_roof, &disable, NULL);
     //End logic condition
 
+    green_house_scheduler_init();
     init_connection();
+
+    green_house_add_function(S2MS(60), publish_topic);
 
     //Starts to scan sensor and logic conditions
     green_house_scheduler_start();

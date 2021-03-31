@@ -11,51 +11,41 @@
 #include <stdarg.h>
 
 #include "../devices/devices_manager.h"
+#include "../devices/servo_device.h"
+#include "../devices/dht11.h"
+#include "../devices/digital_out.h"
+
+#include "jsmn.h"
 
 #ifndef EMCUTE_ID
 #define EMCUTE_ID           ("gertrud")
 #endif
-#define EMCUTE_PRIO         (THREAD_PRIORITY_MAIN - 1)
 
-#define NUMOFSUBS           (1U)
-#define TOPIC_MAXLEN        (64U)
+#define TOPIC_MAXLEN        256
+#define MAX_JSON_TOKEN      128
 
-#define COUNT(x)            sizeof(x)/sizeof(x[0])
+char em_stack[THREAD_STACKSIZE_MAIN];
 
-static char stack[THREAD_STACKSIZE_DEFAULT];
+static emcute_sub_t subscription;
+static char topics[TOPIC_MAXLEN];
+int can_access = 1;
 
-static emcute_sub_t subscriptions[NUMOFSUBS];
-static char topics[NUMOFSUBS][TOPIC_MAXLEN];
+emcute_topic_t emcute_topic;
 
-topic_device_t topic_devices[] = {
-        {TOPIC_HUMIDITY,    "HUMI", NULL},
-        {TOPIC_TEMPERATURE, "TEMP", NULL},
-        {TOPIC_SOIL,        "SOIL", NULL},
-        {TOPIC_WATER_LEVEL, "WATL", NULL}
-};
+jsmn_parser p;
+jsmntok_t t[MAX_JSON_TOKEN];
 
-emcute_topic_t emcute_topics[COUNT(topic_devices)];
-
-static void emcute_register_sensors_topics(void) {
-    for (unsigned int i = 0; i < COUNT(topic_devices); i++) {
-        emcute_topics[i].name = topic_devices[i].name;
-        topic_devices[i].topic_pointer = emcute_topics + i;
-        emcute_reg(emcute_topics + i);
+static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
+    if (tok->type == JSMN_STRING && (int) strlen(s) == tok->end - tok->start &&
+        strncmp(json + tok->start, s, tok->end - tok->start) == 0) {
+        return 0;
     }
+    return -1;
 }
 
-void emcute_publish(topic_e topic, int value) {
-
-    for (unsigned int i = 0; i < COUNT(topic_devices); i++) {
-        if (topic_devices[i].device == topic) {
-            char out[32];
-            sprintf(out, "%d\n", value);
-            unsigned flags = EMCUTE_QOS_0;
-            emcute_pub(topic_devices[i].topic_pointer, out, strlen(out), flags);
-            return;
-        }
-    }
-
+void emcute_publish(char *str) {
+    unsigned flags = EMCUTE_QOS_0;
+    emcute_pub(&emcute_topic, str, strlen(str), flags);
 }
 
 static void *emcute_thread(void *arg) {
@@ -64,13 +54,110 @@ static void *emcute_thread(void *arg) {
     return NULL;    /* should never be reached */
 }
 
+void on_pub_my(const emcute_topic_t *topic, void *data, size_t len) {
+    if (!can_access){
+        printf("ACCESS DENIED!\n");
+        return;
+    }
+
+    char * topic_name = MQTT_CMD_TOPIC;
+    if(strcmp(topic->name,topic_name)!=0)
+        return;
+
+    can_access = 0;
+
+    char *in = (char *) data;
+    if (len == 0 || strlen(in) < 10) {
+        can_access = 1;
+        return;
+    }
+    /*
+    printf("### got publication for topic '%s' [%i] ###\n",
+           topic->name, (int) topic->id);
+
+    for (size_t i = 0; i < len; i++) {
+        printf("%c", in[i]);
+    }
+    puts("\n");
+     */
+
+    memset(&p, 0, sizeof(jsmn_parser));
+    memset(&t, 0, sizeof(jsmntok_t) * MAX_JSON_TOKEN);
+
+    jsmn_init(&p);
+    int r = jsmn_parse(&p, in, len, t, MAX_JSON_TOKEN);
+
+    if (r < 0) {
+        printf("Failed to parse JSON: %d\n", r);
+        can_access = 1;
+        return;
+
+    }
+
+    if (r < 1 || t[0].type != JSMN_OBJECT) {
+        printf("Object expected\n");
+        can_access = 1;
+        return;
+    }
+
+    /* Loop over all keys of the root object */
+    char name[10];
+    char value[10];
+    for (int i = 1; i < r; i++) {
+        if (jsoneq(in, &t[i], "name") == 0) {
+            /* We may use strndup() to fetch string value */
+            sprintf(name, "%.*s", t[i + 1].end - t[i + 1].start,
+                    in + t[i + 1].start);
+            //printf("Name: %s\n", name);
+            i++;
+        }
+        else if (jsoneq(in, &t[i], "value") == 0) {
+            /* We may additionally check if the value is either "true" or "false" */
+            sprintf(value, "%.*s", t[i + 1].end - t[i + 1].start,
+                    in + t[i + 1].start);
+            //printf("value: %s\n", value);
+            i++;
+        }
+        else {
+            printf("Unexpected key: %.*s\n", t[i].end - t[i].start,
+                   in + t[i].start);
+        }
+    }
+
+    if (strlen(name) > 0 && strlen(value) > 0) {
+        int int_value = atoi(value);
+
+        if (strcmp(name, "pump") == 0) {
+            digital_out_t *pump = device_manager_get_device(PUMP);
+            if (int_value)
+                digital_out_enable(pump);
+            else
+                digital_out_disable(pump);
+
+        }
+        else if (strcmp(name, "servo") == 0) {
+
+            servo_device_t *device = device_manager_get_device(SERVO);
+            servo_device_set_manual_override(device, int_value);
+            if (int_value == -1) {
+                //servo_device_set_position(device, degree);
+                servo_device_clear_manual_override(device);
+            }
+        }
+    }
+
+    can_access = 1;
+}
+
 void init_connection(void) {
     /* initialize our subscription buffers */
-    memset(subscriptions, 0, (NUMOFSUBS * sizeof(emcute_sub_t)));
+    memset(&subscription, 0, sizeof(emcute_sub_t));
 
-    /* start the emcute thread */
-    thread_create(stack, sizeof(stack), EMCUTE_PRIO, 0,
-                  emcute_thread, NULL, "emcute");
+    thread_create(em_stack, sizeof(em_stack),
+                  THREAD_PRIORITY_MAIN - 1,
+                  THREAD_CREATE_STACKTEST,
+                  emcute_thread,
+                  NULL, "emcute thread");
 
     // connect to MQTT-SN broker
     printf("Connecting to MQTT-SN broker %s port %d.\n",
@@ -79,13 +166,15 @@ void init_connection(void) {
     sock_udp_ep_t gw = {.family = AF_INET6, .port = SERVER_PORT};
     char *topic = MQTT_TOPIC;
     char *message = "connected";
-    size_t len = strlen(message);
+    size_t len = 0;
 
     /* parse address */
     if (ipv6_addr_from_str((ipv6_addr_t * ) & gw.addr.ipv6, SERVER_ADDR) == NULL) {
         printf("error parsing IPv6 address\n");
         return;
     }
+    else printf("Parsed Pv6 address\n");
+
 
     if (emcute_con(&gw, true, topic, message, len, 0) != EMCUTE_OK) {
         printf("error: unable to connect to [%s]:%i\n", SERVER_ADDR,
@@ -96,9 +185,24 @@ void init_connection(void) {
     printf("Successfully connected to gateway at [%s]:%i\n",
            SERVER_ADDR, (int) gw.port);
 
-    (void) topics;
+    /* setup subscription to topic*/
+    unsigned flags = EMCUTE_QOS_0;
+    subscription.cb = on_pub_my;
+    memset(topics, 0, TOPIC_MAXLEN);
+    subscription.topic.name = MQTT_CMD_TOPIC;
 
-    emcute_register_sensors_topics();
+    if (emcute_sub(&subscription, flags) != EMCUTE_OK) {
+        printf("error: unable to subscribe to %s\n", MQTT_CMD_TOPIC);
+        return;
+    }
+    else
+        printf("Now subscribed to %s\n", MQTT_CMD_TOPIC);
+
+    //Register topic to send
+    emcute_topic.name = MQTT_TOPIC;
+    emcute_reg(&emcute_topic);
+
+
 }
 
 

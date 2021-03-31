@@ -24,4 +24,5 @@ void digital_out_toggle(digital_out_t * device);
 bool digital_out_is_enabled(digital_out_t * device);
 void digital_out_enable_for_x_ms(digital_out_t *device,int ms);
 void digital_out_update(digital_out_t *device);
+int digital_out_get_current_state(digital_out_t *device);
 #endif //GREENHOUSE_DIGITAL_OUT_H

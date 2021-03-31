@@ -81,19 +81,14 @@ void device_manager_scan(device_type_e device_type) {
             analog_device_update(device);
             digital_out_disable(device);
 
-            emcute_publish(TOPIC_WATER_LEVEL, ((analog_device_t *) device)->scaled);
-
             break;
         case SOIL_MOISTURE:
             analog_device_update(device);
 
-            emcute_publish(TOPIC_SOIL, ((analog_device_t *) device)->scaled);
-
             break;
         case TEMP_HUM:
             dht11_update(device);
-            emcute_publish(TOPIC_TEMPERATURE, ((dht11_device_t *) device)->last_temp);
-            emcute_publish(TOPIC_HUMIDITY, ((dht11_device_t *) device)->last_hum);
+
             break;
         case PUMP:
             digital_out_update(device);

@@ -84,11 +84,13 @@ IPV6_PREFIX ?= fe80:2::/64
 # The Broker address, port and the default MQTT topic to subscribe.
 SERVER_ADDR = fe80::1
 SERVER_PORT = 1885
-MQTT_TOPIC = tft
+MQTT_TOPIC = gh
+MQTT_CMD_TOPIC = cmd
 
 CFLAGS += -DSERVER_ADDR='"$(SERVER_ADDR)"'
 CFLAGS += -DSERVER_PORT=$(SERVER_PORT)
 CFLAGS += -DMQTT_TOPIC='"$(MQTT_TOPIC)"'
+CFLAGS += -DMQTT_CMD_TOPIC='"$(MQTT_CMD_TOPIC)"'
 
 ETHOS_BAUDRATE ?= 115200
 include $(CURDIR)/Makefile.ethos.conf

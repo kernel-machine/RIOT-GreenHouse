@@ -66,3 +66,8 @@ void digital_out_enable_for_x_ms(digital_out_t *device, int ms) {
     device->is_timed_active = 1;
     device->last_activation = US2MS(xtimer_now_usec()) + ms;
 }
+
+int digital_out_get_current_state(digital_out_t *device) {
+    return device->state;
+}
+
