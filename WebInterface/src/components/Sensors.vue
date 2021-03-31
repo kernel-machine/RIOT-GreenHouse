@@ -1,8 +1,14 @@
 <template>
   <div>
-    <MinMaxAvg title="Temperature" unit="°C" :color="this.TEMP_COLOR" v-bind:data="this.$data.received_data.map(x=>x.temperature)"></MinMaxAvg>
-    <MinMaxAvg title="Humidity" unit="%" :color="this.HUMIDITY_COLOR" v-bind:data="this.$data.received_data.map(x=>x.humidity)"></MinMaxAvg>
-    <MinMaxAvg title="Soil moisture" unit="%" :color="this.SOIL_COLOR" v-bind:data="this.$data.received_data.map(x=>x.soil)"></MinMaxAvg>
+    <loading :active.sync="isLoading"
+             :can-cancel="false"
+             :is-full-page="true"></loading>
+    <MinMaxAvg title="Temperature" unit="°C" :color="this.TEMP_COLOR"
+               v-bind:data="this.$data.received_data.map(x=>x.temperature)"></MinMaxAvg>
+    <MinMaxAvg title="Humidity" unit="%" :color="this.HUMIDITY_COLOR"
+               v-bind:data="this.$data.received_data.map(x=>x.humidity)"></MinMaxAvg>
+    <MinMaxAvg title="Soil moisture" unit="%" :color="this.SOIL_COLOR"
+               v-bind:data="this.$data.received_data.map(x=>x.soil)"></MinMaxAvg>
     <br>
     <p><b>Last update: </b>{{ this.formatTimestamp(this.$data.last_update.timestamp) }}</p>
     <p><b>Water level: </b>{{ this.$data.last_update.water_level }}%</p>
@@ -10,7 +16,7 @@
     <p><b>Pump state: </b>{{ this.$data.last_update.pump == 1 ? 'on' : 'off' }}</p>
 
     <ButtonPanel></ButtonPanel>
-    <div style="display: flex; flex-direction: row;">
+    <div v-if="this.$data.received_data.length>0" style="display: flex; flex-direction: row;">
 
       <my-graph style="flex: 30%" v-bind:values="this.$data.received_data.map(x=>x.temperature)"
                 v-bind:ts="this.$data.received_data.map(x=>x.timestamp)" name="Temperature" :color="this.TEMP_COLOR">
@@ -29,7 +35,10 @@
 </template>
 
 <script>
-
+// Import component
+import Loading from 'vue-loading-overlay';
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
 import MyGraph from "@/components/MyGraph";
 
 const axios = require('axios').default;
@@ -44,6 +53,7 @@ export default {
     ButtonPanel,
     MyGraph,
     MinMaxAvg,
+    Loading
   },
   data: function () {
     return {
@@ -52,7 +62,8 @@ export default {
       last_update: {},
       TEMP_COLOR: "#ef476f",
       HUMIDITY_COLOR: "#ffd166",
-      SOIL_COLOR: "#06d6a0"
+      SOIL_COLOR: "#06d6a0",
+      isLoading: true,
     }
   },
   mounted() {
@@ -74,6 +85,9 @@ export default {
             })
             this.$data.last_update = ordered_received_data[ordered_received_data.length - 1];
 
+          })
+          .finally(() => {
+            this.isLoading = false;
           })
     }
   }
