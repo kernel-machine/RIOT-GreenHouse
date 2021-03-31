@@ -1,0 +1,21 @@
+#Scan interval
+PUMP_INTERVAL = 900			#Interval between every check for pump activation rule S
+DHT_INTERVAL = 20			#Interval for dht measurement S
+SOIL_INTERVAL = 20			#Interval for soil measurement S
+WATER_LEVEL_INTERVAL = 20	#Interval for water level measurement S
+
+MIN_WATER_LEVEL = 20		#Min water level in which is allowed to turn on the pump %
+MIN_SOIL = 20				#Soil moisture when turn on the pump %
+MAX_HUM = 20				#Humidity when open the window %
+PUMP_CAPACITY = 31.4875		#Pump capacity L/H
+WATER_TO_PUMP = 500			#Amount of water to pump when pump is activated mL
+
+CFLAGS += -DPUMP_INTERVAL='$(PUMP_INTERVAL)'
+CFLAGS += -DDHT_INTERVAL='$(DHT_INTERVAL)'
+CFLAGS += -DSOIL_INTERVAL='$(SOIL_INTERVAL)'
+CFLAGS += -DWATER_LEVEL_INTERVAL='$(WATER_LEVEL_INTERVAL)'
+CFLAGS += -DMIN_WATER_LEVEL='$(MIN_WATER_LEVEL)'
+CFLAGS += -DMIN_SOIL='$(MIN_SOIL)'
+CFLAGS += -DMAX_HUM='$(MAX_HUM)'
+CFLAGS += -DPUMP_CAPACITY='$(PUMP_CAPACITY)'
+CFLAGS += -DWATER_TO_PUMP='$(WATER_TO_PUMP)'

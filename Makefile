@@ -98,7 +98,7 @@ include $(CURDIR)/Makefile.ethos.conf
 # Specify custom dependencies for your application here ...
 # APPDEPS = app_data.h config.h
 include $(RIOTBASE)/Makefile.include
-
+include $(CURDIR)/Makefile.conf.include
 .PHONY: host-tools
 
 host-tools:

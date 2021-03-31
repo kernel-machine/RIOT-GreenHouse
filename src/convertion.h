@@ -5,7 +5,7 @@
 #ifndef GREENHOUSE_TIMER_CONVERSION_H
 #define GREENHOUSE_TIMER_CONVERSION_H
 
-#define PUMP_LS     31.4875
+#define PUMP_LS     PUMP_CAPACITY
 
 #define HZ2US(hz)   (1000000 / (hz))
 #define US2S(us)    ((us) * 1e-6f)

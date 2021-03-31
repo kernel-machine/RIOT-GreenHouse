@@ -41,7 +41,6 @@ void toggle_pump(int *a) {
         digital_out_enable(&pump);
     else {
         int ms = ML2MS(*a);
-        printf("ENABLE_PUMP_FOR %d\n", ms);
         digital_out_enable_for_x_ms(&pump, ms);
     }
 }
@@ -156,16 +155,16 @@ void gh_init(void) {
     device_manager_add(PUMP, &pump);
     device_manager_add(SERVO, &servo);
 
-    device_manager_set_scan_interval(TEMP_HUM, S2MS(20));
-    device_manager_set_scan_interval(WATER_LEVEL, S2MS(20));
-    device_manager_set_scan_interval(SOIL_MOISTURE, S2MS(20));
-    device_manager_set_scan_interval(PUMP, 200);
+    device_manager_set_scan_interval(TEMP_HUM, S2MS(DHT_INTERVAL));
+    device_manager_set_scan_interval(WATER_LEVEL, S2MS(WATER_LEVEL_INTERVAL));
+    device_manager_set_scan_interval(SOIL_MOISTURE, S2MS(SOIL_INTERVAL));
+    device_manager_set_scan_interval(PUMP, 200);    //A bit of hysteresis between activations
 
     //Logic condition definitions
-    int water_level_threshold = 15;
-    int soil_moisture_threshold = 40;
-    int hum_threshold = 350;
-    int ms = 1000;
+    int water_level_threshold = MIN_WATER_LEVEL;
+    int soil_moisture_threshold = MIN_SOIL;
+    int hum_threshold = MAX_HUM * 10;
+    int ms = S2MS(ML2S(WATER_TO_PUMP));
     int enable = 1;
     int disable = 0;
 
@@ -183,7 +182,7 @@ void gh_init(void) {
                                                                    toggle_pump, &ms,
                                                                    lc_enable_pump1);
 
-    logic_condition_set_interval(lc_enable_pump2, S2MS(30));
+    logic_condition_set_interval(lc_enable_pump2, S2MS(PUMP_INTERVAL));
 
     logic_condition_add(green_house_hum_ptr, GREATER, &hum_threshold, toggle_roof, &enable, NULL);
     logic_condition_add(green_house_hum_ptr, LESS, &hum_threshold, toggle_roof, &disable, NULL);
