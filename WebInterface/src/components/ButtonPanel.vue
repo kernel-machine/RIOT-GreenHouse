@@ -35,7 +35,7 @@ export default {
 <style scoped>
 .myButton {
   background-color: #06d6a0;
-  border-radius: 13px;
+  border-radius: 10px;
   border: 2px solid #029770;
   display: inline-block;
   cursor: pointer;
