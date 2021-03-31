@@ -52,7 +52,7 @@ export default {
       }]
     },
     updateTs(data) {
-      const labels = data.map(x => this.formatTimestamp(x.timestamp));
+      const labels = data.map(x => this.formatTimestamp(x));
 
       const xaxis = {
         categories: labels
@@ -62,7 +62,7 @@ export default {
       };
     },
     formatTimestamp(ts) {
-      return moment(ts).format("LLL")
+      return moment(ts).format("D/M - HH:mm")
     },
   },
   watch: {
