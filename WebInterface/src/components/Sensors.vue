@@ -12,8 +12,8 @@
     <br>
     <p><b>Last update: </b>{{ this.formatTimestamp(this.$data.last_update.timestamp) }}</p>
     <p><b>Water level: </b>{{ this.$data.last_update.water_level }}%</p>
-    <p><b>Window: </b>{{ this.$data.last_update.servo == 180 ? 'open' : 'close' }}</p>
-    <p><b>Pump state: </b>{{ this.$data.last_update.pump == 1 ? 'on' : 'off' }}</p>
+    <p><b>Window: </b>{{ this.$data.last_update.servo === 180 ? 'open' : 'close' }}</p>
+    <p><b>Pump state: </b>{{ this.$data.last_update.pump === 1 ? 'on' : 'off' }}</p>
 
     <ButtonPanel></ButtonPanel>
     <div v-if="this.$data.received_data.length>0" style="display: flex; flex-direction: row;">
@@ -67,7 +67,8 @@ export default {
     }
   },
   mounted() {
-    this.loadData()
+    this.loadData();
+    setInterval(this.loadData, 60000);
   },
   methods: {
     formatTimestamp(ts) {
