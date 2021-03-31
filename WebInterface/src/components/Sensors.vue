@@ -16,17 +16,17 @@
     <p><b>Pump state: </b>{{ this.$data.last_update.pump === 1 ? 'on' : 'off' }}</p>
 
     <ButtonPanel></ButtonPanel>
-    <div v-if="this.$data.received_data.length>0" style="display: flex; flex-direction: row;">
+    <div v-if="this.$data.received_data.length>0" class="flex_container">
 
-      <my-graph style="flex: 30%" v-bind:values="this.$data.received_data.map(x=>x.temperature)"
+      <my-graph class="graph" v-bind:values="this.$data.received_data.map(x=>x.temperature)"
                 v-bind:ts="this.$data.received_data.map(x=>x.timestamp)" name="Temperature" :color="this.TEMP_COLOR">
       </my-graph>
 
-      <my-graph style="flex: 30%" v-bind:values="this.$data.received_data.map(x=>x.humidity)"
+      <my-graph class="graph" v-bind:values="this.$data.received_data.map(x=>x.humidity)"
                 v-bind:ts="this.$data.received_data.map(x=>x.timestamp)" name="Humidity" :color="this.HUMIDITY_COLOR">
       </my-graph>
 
-      <my-graph style="flex: 30%" v-bind:values="this.$data.received_data.map(x=>x.soil)"
+      <my-graph class="graph" v-bind:values="this.$data.received_data.map(x=>x.soil)"
                 v-bind:ts="this.$data.received_data.map(x=>x.timestamp)" name="Soil moisture" :color="this.SOIL_COLOR">
       </my-graph>
 
@@ -96,5 +96,22 @@ export default {
 </script>
 
 <style scoped>
+.graph {
+  flex: 30%;
+}
 
+.flex_container {
+  display: flex;
+  flex-direction: row;
+}
+
+@media screen and (max-width: 1000px) {
+  .graph {
+    flex: 100%;
+  }
+  .flex_container {
+    display: flex;
+    flex-direction: column;
+  }
+}
 </style>
