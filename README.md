@@ -1,7 +1,4 @@
 # Green house powered by RIOT OS
-### Work in progress
-### Web interface
-[link](https://kernel-machine.github.io/RIOT-GreenHouse/)
 
 This project is an IoT Green house based on nucleo-f401re and RIOT OS, the greenhouse is fully
 autonomous, it opens a windows when the environment humidity is too high, and there is
@@ -16,7 +13,7 @@ The advantages of having an IoT greenhouse are:
 - If well tuned it can increase the productivity.
 - If well tuned it can save water, watering only if needed with the optimal quantity
 
-### Sensors and actuators used
+## Sensors and actuators used
 The sensor used are:
 - DHT11, a digital sensor used to measure air temperature and humidty.
 - SOIL MOISTURE sensor, an analog sensor used to measure the SOIL MOISTURE
@@ -29,7 +26,7 @@ Tha actuators are:
 All sensor sensor are periodically fetched, the DHT11 and soil moisture sensor are fetched to 
 detect when perform action, while the water level sensor is fetched to publish its value on user interface.
 
-#### Actions
+### Actions
 The SERVO MOTOR the open the window is activated by this rule:
 
 `IF DHT11.Humidiy > MAX_HUMIDITY THEN setServo(180) ELSE setServo(0)`
@@ -49,7 +46,7 @@ quantity of water for the jar size, the number of seconds depends by the pump ca
 Action is checked every `PUMP_INTERVAL` minutes in order to allow the water to penetrate in to the 
 terrain and have a correct soil moisture read.
 
-### Collected data
+## Collected data
 
 Each sensor report these data:
 #### DHT11
@@ -85,21 +82,21 @@ percentage by software.
        
 Water level, Temperature, Humidity and Soil moisture are published on MQTT-SN broker. 
 
-It is possible tune parameters editing the values in `Makefile.conf.include`
+It is possible tune parameters and scan interval editing the values in `Makefile.conf.include`
 
-###Web Interface
+## Web Interface
 With the web interface is possible to visualize the last hour of received data in charts,
-it show aggregate value for the sensors and it's possible to toggle the pump and open and 
+it show aggregated value for the sensors and it's possible to toggle the pump and open and 
 close the window.
 
-### Connections
+## Connections
 The sensors must be connected according this picture.
 ![Connection](resources/Connection_bb.png)
 The water level sensor power pin is connected to the pin D5 to power on it only during a
 measurement to avoid oxidations.
 
 If you prefer to change ypu pin connection, you can change editing in the file `src/gh_init.c` this values
-```
+```C
 ...
 #define DHT_PIN                 GPIO_PIN(PORT_A, 10)    //D2
 #define WATER_LEVEL_ADC         ADC_LINE(1)
@@ -110,7 +107,7 @@ If you prefer to change ypu pin connection, you can change editing in the file `
 #define SERVO_PWM               0
 ...
 ```
-### Network infrastructure
+## Network infrastructure
 ![Connection](resources/NetworkInfr.png)
 The RIOT software comunicate with an MQTT-SN broker ([Mosquitto RSMB](https://github.com/eclipse/mosquitto.rsmb)) 
 that is connected to another 
@@ -133,7 +130,7 @@ service called Gateway API
 To provide a network interface at the STM nucleo board emcute is used.
 
 
-## HOW TO RUN
+## How to run
 Mosquitto RSMB must be start with this config, so you need to create a new file `config.conf`
 ```
 # add some debug output
@@ -152,11 +149,12 @@ connection local_bridge_to_mosquitto
   address 127.0.0.1:1883
   topic gh out
   topic cmd in
-
-And run the broker with this configuration
-`./broker_mqtts config.conf`
 ```
-We need also to run Mosquitto (yes, another Mosquitto, but not the RSMB), with this configuration file (`mosquitto_config.conf`):
+And run the broker with this configuration
+> ./broker_mqtts config.conf
+
+We need also to run Mosquitto (yes, another Mosquitto, but not the RSMB), 
+with this configuration file (`mosquitto_config.conf`):
 ```
 connection awsiot
 
@@ -195,12 +193,16 @@ bridge_keyfile /etc/mosquitto/certs/private.key
 You need to replace the certificate paths with your paths and paste your AWS IoT Core ATS endpoint.
 
 Run mosquitto with this configuration file
-`mosquitto -c mosquitto_config.conf`
+> mosquitto -c mosquitto_config.conf
 
 Finally compile and execute the software on your STM nucleo f401re
-```
-make flash term
-```
+
+> make flash term
+
 The interface will ask you the sudo permission to configure tap in order to bridge the RIOT application
 to the network connection of your pc.
 
+### Assumption
+The project is not designed to be super fast, the phenomena observed is very slow (air humidity, temperature, soil moisture).
+It is not also design to be extremely power efficient, because we have to power the water pump with the 230V AC, so the board 
+will be powered by a power supply.
