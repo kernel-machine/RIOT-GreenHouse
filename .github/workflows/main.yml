@@ -19,14 +19,10 @@ jobs:
   build_vue:
     runs-on: ubuntu-latest
     name: Build Vue
-    defaults:
-      run:
-        working-directory: './WebInterface'
     steps:
     - uses: actions/checkout@v2
-    - id: Build-Vue
-      uses: xRealNeon/VuePagesAction@1.0.0
-      with:
-        username: 'kernel-machine'
-        reponame: 'RIOT-GreenHouse'
-        token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
+    - name: Setting
+      run: cd ./WebInterface && npm install
+    - name: Build
+      run: npm run build
+      
