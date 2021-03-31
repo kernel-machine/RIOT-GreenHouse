@@ -21,11 +21,8 @@ jobs:
     name: Build Vue
     steps:
     - uses: actions/checkout@v2
-    - name: Compile
-      run: cd ./WebInterface
-    - id: Build-Vue
-      uses: xRealNeon/VuePagesAction@1.0.0
-      with:
-        username: 'kernel-machine'
-        reponame: 'RIOT-GreenHouse'
-        token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
+    - name: Setting
+      run: cd ./WebInterface && npm install
+    - name: Build
+      run: npm run build
+      
