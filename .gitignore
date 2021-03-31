@@ -1,2 +1,3 @@
 /bin/
 /WebInterface/node_modules/
+/WebInterface/package-lock.json
