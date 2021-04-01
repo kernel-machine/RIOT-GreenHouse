@@ -1,15 +1,15 @@
 # Greenhouse powered by RIOT OS
 
 This project is an IoT Greenhouse based on nucleo-f401re and RIOT OS, the greenhouse is fully
-autonomous, it opens a windows when the environment humidity is too high, and there is
+autonomous, it opens a windows when the indoor environment humidity is too high, and there is
 a pump that water the soil when it is dry, the pump get the water from a tank provided with a level sensor, 
 in such a way that if the tank is dry, the pump isn't turn on to avoid to damage it.
 
 The greenhouse can be monitored by the [web interface](https://kernel-machine.github.io/RIOT-GreenHouse/)
 
 The advantages of having an IoT greenhouse are:
-- Plats are always in a ideal environment, with the right soil moisture and air humidity
-- Plats are watered even if the user are not present and the user can controls remotely that the plants are fine
+- The plants are always in a ideal environment, with the right soil moisture and air humidity
+- The plants are watered even if the user are not present and the user can controls remotely that the plants are fine
 - If well tuned it can increase the productivity.
 - If well tuned it can save water, watering only if needed with the optimal quantity
 
@@ -39,11 +39,11 @@ While for the RELAY the power the pump:
 
 The relay is turned on only if the soil is dry and there is enough water in the tank.
 
-The relay is turned on for a specific number of seconds is such a way to pump the right
+The relay is turned on for a specific number of seconds in such a way to pump the right
 quantity of water for the jar size, the number of seconds depends by the pump capacity.
 
 Action is checked every `PUMP_INTERVAL` minutes in order to allow the water to penetrate in to the 
-terrain and have a correct soil moisture read.
+terrain to have a correct soil moisture read.
 
 ## Collected data
 
@@ -118,11 +118,11 @@ The RIOT firmware communicate with an MQTT-SN broker ([Mosquitto RSMB](https://g
 that is connected to another 
 MQTT-SN/MQTT BROKER ([Mosquitto](https://mosquitto.org/)) that is connected via MQTT to Aws IoT Core.
 
-When a message is received by the AWS IoT core a lambda function is invoked, this lambda function 
+When a message is received by the AWS IoT core a lambda function is invoked (`AWS/storeToDynamoDB.js`), this lambda function 
 process the message and store it on dynamoDB.
 
-The web page make an HTTPS request to a lambda function that provide the data stored on dynamoDB. While
-to control the actuators the web interface make an HTTPS request to a lambda function that send message to an
+The web page make an HTTPS request to a lambda function (`AWS/getData.js`) that provide the data stored on dynamoDB. While
+to control the actuators the web interface make an HTTPS request to a lambda function (`AWS/generateMQTTMessage.js`) that send message to an
 MQTT topic via AWS IoT Core.
 
 There are 2 topics:
@@ -158,7 +158,7 @@ And run the broker with this configuration
 > ./broker_mqtts config.conf
 
 We need also to run Mosquitto (yes, another Mosquitto, but not the RSMB version), in order to have
-a transparent gateway between Mosquitto RSMB and AWS IoT Core.
+a transparent bridge between Mosquitto RSMB and AWS IoT Core.
 
 Create this configuration file (`mosquitto_config.conf`):
 ```
@@ -201,12 +201,13 @@ You need to replace the certificate paths with your paths and paste your AWS IoT
 Run mosquitto with this configuration file
 > mosquitto -c mosquitto_config.conf
 
-Finally compile and execute the software on your STM nucleo f401re
+Finally build and flash the software on your STM nucleo f401re
 
 > make flash term
 
 The interface will ask you the sudo permissions to configure tap in order to bridge the RIOT application
 to the network of your pc, you can get information and control the greenhouse also via the command line interface.
+Enter `help` to have the available commands
 
 ### Assumption and notes
 The project is not designed to be super fast, the phenomena observed is very slow (air humidity, temperature, soil moisture).
@@ -214,4 +215,4 @@ It is not also design to be extremely power efficient, because we have to power 
 the board will be powered by a power supply.
 
 The temperature measured by the DHT11 is useless for the project actions, but i've used the DHT11 for the humidity,
-so, why not show also the temperature  on web interface, we have it!
+so, why not to show also the temperature on web interface, we have it!
