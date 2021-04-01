@@ -112,7 +112,105 @@ If you prefer to change your pin connection, you can change editing in the file 
 #define SERVO_PWM               0
 ...
 ```
-## Network infrastructure
+
+## Software component on IoT device
+Some libraries was implemented to have a clean, understandable a reusable code.
+
+- Devices are processed with the library DeviceManager (`devices/devices_manager.h`), in order to have an unique interface 
+to access to sensors data.
+- Logic condition to check if an action should be executed are implemented with another library (`src/logic_condition.h`)
+that provide a reusable function to get this actions.
+- There is a scheduler that call the functions with a specific time (`src/gh_scheduler.h`) 
+- There also another library for networks commands.
+
+In the file `gh_init.c` there is all the invocation to the functions that setup the code:
+
+Initialize all sensors 
+```C
+void gh_init(void) {
+    xtimer_init();
+
+    dht11_init(&dht, DHT_PIN);
+
+    analog_device_init(&water_level, WATER_LEVEL_ADC);
+    analog_device_init(&soil_moisture, SOIL_MOISTURE_ADC);
+
+    digital_out_init(&pump, RELAY_PIN);
+    digital_out_init(&water_level_power, WATER_LEVEL_POWER_PIN);
+    servo_device_init(&servo, SERVO_PWM, SERVO_CHANNEL);
+```
+Associate a label to a sensor
+```C
+    device_manager_add(TEMP_HUM, &dht);
+    device_manager_add(WATER_LEVEL, &water_level);
+    device_manager_add(WATER_LEVEL_POWER, &water_level_power);
+    device_manager_add(SOIL_MOISTURE, &soil_moisture);
+    device_manager_add(PUMP, &pump);
+    device_manager_add(SERVO, &servo);
+```
+Set the interval between a fetch and another of the sensor, for the actuator the interval
+represents how ofter the actuators can be updated, if set to 0, reading and control are in "real time"
+```C
+    device_manager_set_scan_interval(TEMP_HUM, S2MS(DHT_INTERVAL));
+    device_manager_set_scan_interval(WATER_LEVEL, S2MS(WATER_LEVEL_INTERVAL));
+    device_manager_set_scan_interval(SOIL_MOISTURE, S2MS(SOIL_INTERVAL));
+    device_manager_set_scan_interval(PUMP, 200);    //A bit of hysteresis between activations
+```
+Initialize the logic condition variables
+```C
+    //Logic condition definitions
+    int water_level_threshold = MIN_WATER_LEVEL;
+    int soil_moisture_threshold = MIN_SOIL;
+    int hum_threshold = MAX_HUM * 10;
+    int ms = S2MS(ML2S(WATER_TO_PUMP));
+    int enable = 1;
+    int disable = 0;
+
+    const int *water_level_pointer = (const int *) &(water_level.scaled);
+    const int *soil_moisture_pointer = (const int *) &(soil_moisture.scaled);
+    const int *green_house_hum_ptr = &(dht.last_hum);
+```
+Define the logic conditions
+> logic_condition_t *
+logic_condition_add(OPERAND_A, OPERATOR, OPERAND_B, FunctionToCall, IntParameterForFunctionToCall, anotherLCToCheck);
+
+With these logic conditions we can make complex if-then-act action keeping the code reusable.
+```C
+    logic_condition_init();
+
+    const logic_condition_t *lc_enable_pump1 =
+            logic_condition_add(water_level_pointer, GREATER, &water_level_threshold, NULL, NULL, NULL);
+
+    const logic_condition_t *lc_enable_pump2 = logic_condition_add(soil_moisture_pointer, LESS,
+                                                                   &soil_moisture_threshold,
+                                                                   toggle_pump, &ms,
+                                                                   lc_enable_pump1);
+
+    //Check interval for this logic condition, 0 by default
+    logic_condition_set_interval(lc_enable_pump2, S2MS(PUMP_INTERVAL));
+
+    logic_condition_add(green_house_hum_ptr, GREATER, &hum_threshold, toggle_roof, &enable, NULL);
+    logic_condition_add(green_house_hum_ptr, LESS, &hum_threshold, toggle_roof, &disable, NULL);
+    //End logic condition
+
+    green_house_scheduler_init();
+    init_connection();
+```
+Add a function to the scheduler, the function `publish_topic` will be called every `MQTT_PUBLISH_RATE` seconds and
+`scan_device_and_update_lc` in "real time" (every 0 seconds)
+```C
+    green_house_add_function(S2MS(MQTT_PUBLISH_RATE), publish_topic);
+
+    //Scan device is done as soon as possible, but the device manager reads from sensor only if needed.
+    green_house_add_function(0, scan_device_and_update_lc);
+
+    //Starts to scan sensor and logic conditions
+    green_house_scheduler_start();
+
+    command_wait_for_command();
+}
+```
+## Network infrastructure and software cloud component 
 ![Connection](resources/NetworkInfr.png)
 The RIOT firmware communicate with an MQTT-SN broker ([Mosquitto RSMB](https://github.com/eclipse/mosquitto.rsmb)) 
 that is connected to another 
