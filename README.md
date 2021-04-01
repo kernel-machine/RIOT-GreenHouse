@@ -119,11 +119,11 @@ Some libraries was implemented to have a clean, understandable a reusable code.
 - Devices are processed with the library DeviceManager (`devices/devices_manager.h`), in order to have an unique interface 
 to access to sensors data.
 - Logic condition to check if an action should be executed are implemented with another library (`src/logic_condition.h`)
-that provide a reusable function to get this actions.
-- There is a scheduler that call the functions with a specific time (`src/gh_scheduler.h`) 
+that provide a reusable functions to get this actions.
+- There is a scheduler that call the functions with a specific interval time (`src/gh_scheduler.h`) 
 - There also another library for networks commands.
 
-In the file `gh_init.c` there is all the invocation to the functions that setup the code:
+In the file `gh_init.c` there are all the invocations of the functions that setup the software:
 
 Initialize all sensors 
 ```C
@@ -148,8 +148,8 @@ Associate a label to a sensor
     device_manager_add(PUMP, &pump);
     device_manager_add(SERVO, &servo);
 ```
-Set the interval between a fetch and another of the sensor, for the actuator the interval
-represents how ofter the actuators can be updated, if set to 0, reading and control are in "real time"
+Set the interval between the fetch of the sensors, for the actuator the interval
+represents how ofter the actuators can be updated, if set to 0, reading and control are in "real time".
 ```C
     device_manager_set_scan_interval(TEMP_HUM, S2MS(DHT_INTERVAL));
     device_manager_set_scan_interval(WATER_LEVEL, S2MS(WATER_LEVEL_INTERVAL));
@@ -314,3 +314,6 @@ the board will be powered by a power supply.
 
 The temperature measured by the DHT11 is useless for the project actions, but i've used the DHT11 for the humidity,
 so, why not to show also the temperature on web interface, we have it!
+
+In the software component when i say "real time" i mean that the software do the action as soon as possible, so when the
+scheduler has not functions that must be called.
