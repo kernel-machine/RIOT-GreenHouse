@@ -104,8 +104,8 @@ If you prefer to change your pin connection, you can change editing in the file 
 ```C
 ...
 #define DHT_PIN                 GPIO_PIN(PORT_A, 10)    //D2
-#define WATER_LEVEL_ADC         ADC_LINE(1)
-#define SOIL_MOISTURE_ADC       ADC_LINE(2)
+#define WATER_LEVEL_ADC         ADC_LINE(1)             //A0
+#define SOIL_MOISTURE_ADC       ADC_LINE(2)             //A1
 #define RELAY_PIN               GPIO_PIN(PORT_A, 8)     //D7
 #define WATER_LEVEL_POWER_PIN   GPIO_PIN(PORT_B, 4)     //D5
 #define SERVO_CHANNEL           1

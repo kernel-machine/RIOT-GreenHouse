@@ -24,8 +24,8 @@
 #include "string.h"
 
 #define DHT_PIN                 GPIO_PIN(PORT_A, 10)    //D2
-#define WATER_LEVEL_ADC         ADC_LINE(1)
-#define SOIL_MOISTURE_ADC       ADC_LINE(2)
+#define WATER_LEVEL_ADC         ADC_LINE(1)             //A0
+#define SOIL_MOISTURE_ADC       ADC_LINE(2)             //A1
 #define RELAY_PIN               GPIO_PIN(PORT_A, 8)     //D7
 #define WATER_LEVEL_POWER_PIN   GPIO_PIN(PORT_B, 4)     //D5
 #define SERVO_CHANNEL           1
@@ -40,6 +40,9 @@ digital_out_t pump;
 digital_out_t water_level_power;
 
 servo_device_t servo;
+
+#define BUFFER_SIZE 1024
+char str[BUFFER_SIZE];
 
 void toggle_pump(int *a) {
     if (a == NULL)
@@ -66,12 +69,15 @@ void toggle_roof(int *a) {
         servo_device_set_position(&servo, 180);
 }
 
-
-#define BUFFER_SIZE 1024
-char str[BUFFER_SIZE];
-char *topic_name = "TEMP";
-uint32_t message_id = 0;
-
+static void scan_device_and_update_lc(void) {
+    //Real time
+    for (uint8_t i = 0; i < DEVICE_NUMBER; i++) {
+        if (device_manager_must_be_scanned(i)) {
+            device_manager_scan(i);
+        }
+    }
+    logic_condition_update();
+}
 
 void publish_topic(void) {
     const char out_size = 16;
@@ -191,6 +197,7 @@ void gh_init(void) {
                                                                    toggle_pump, &ms,
                                                                    lc_enable_pump1);
 
+    //Check interval for this logic condition, 0 by default
     logic_condition_set_interval(lc_enable_pump2, S2MS(PUMP_INTERVAL));
 
     logic_condition_add(green_house_hum_ptr, GREATER, &hum_threshold, toggle_roof, &enable, NULL);
@@ -201,6 +208,9 @@ void gh_init(void) {
     init_connection();
 
     green_house_add_function(S2MS(MQTT_PUBLISH_RATE), publish_topic);
+
+    //Scan device is done as soon as possible, but the device manager reads from sensor only if needed.
+    green_house_add_function(0, scan_device_and_update_lc);
 
     //Starts to scan sensor and logic conditions
     green_house_scheduler_start();

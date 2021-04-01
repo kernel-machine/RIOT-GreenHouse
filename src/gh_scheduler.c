@@ -23,16 +23,6 @@ uint32_t last_analog_time_scan = 0;
 
 scheduled_function_t functions[MAX_FUNCTION];
 
-static void real_time_operation(void) {
-    //Real time
-    for (uint8_t i = 0; i < DEVICE_NUMBER; i++) {
-        if (device_manager_must_be_scanned(i)) {
-            device_manager_scan(i);
-        }
-    }
-    logic_condition_update();
-}
-
 void *green_house_core(void *arg) {
     (void) arg;
 
@@ -43,7 +33,6 @@ void *green_house_core(void *arg) {
                 functions[i].next_schedule = US2MS(xtimer_now_usec()) + functions[i].interval;
             }
         }
-        real_time_operation();
         xtimer_msleep(15);
     }
     return NULL;
