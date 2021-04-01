@@ -1,6 +1,6 @@
-# Green house powered by RIOT OS
+# Greenhouse powered by RIOT OS
 
-This project is an IoT Green house based on nucleo-f401re and RIOT OS, the greenhouse is fully
+This project is an IoT Greenhouse based on nucleo-f401re and RIOT OS, the greenhouse is fully
 autonomous, it opens a windows when the environment humidity is too high, and there is
 a pump that water the soil when it is dry, the pump get the water from a tank provided with a level sensor, 
 in such a way that if the tank is dry, the pump isn't turn on to avoid to damage it.
@@ -206,7 +206,7 @@ Finally compile and execute the software on your STM nucleo f401re
 > make flash term
 
 The interface will ask you the sudo permissions to configure tap in order to bridge the RIOT application
-to the network of your pc.
+to the network of your pc, you can get information and control the greenhouse also via the command line interface.
 
 ### Assumption and notes
 The project is not designed to be super fast, the phenomena observed is very slow (air humidity, temperature, soil moisture).
