@@ -208,7 +208,10 @@ Finally compile and execute the software on your STM nucleo f401re
 The interface will ask you the sudo permissions to configure tap in order to bridge the RIOT application
 to the network of your pc.
 
-### Assumption
+### Assumption and notes
 The project is not designed to be super fast, the phenomena observed is very slow (air humidity, temperature, soil moisture).
 It is not also design to be extremely power efficient, because we have to power the water pump with the 230V AC, so also
 the board will be powered by a power supply.
+
+The temperature measured by the DHT11 is useless for the project actions, but i've used the DHT11 for the humidity,
+so, why not show also the temperature  on web interface, we have it!
