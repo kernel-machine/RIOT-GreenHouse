@@ -1,4 +1,6 @@
-# website
+# RIOT GreenHouse Web Interface
+The WebInterface is developed using [Vue](https://vuejs.org/) and hosted on GitHub pages at
+this [link](https://kernel-machine.github.io/RIOT-GreenHouse/)
 
 ## Project setup
 ```
