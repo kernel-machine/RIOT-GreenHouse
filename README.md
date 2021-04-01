@@ -91,7 +91,7 @@ is checked every 30 minutes (by default).
 
 ## Web Interface
 With the web interface is possible to visualize the last hour of received data in charts,
-it show aggregated value for the sensors and it's possible to toggle the pump and open and 
+it show aggregated and current values for the sensors and it's possible to toggle the pump and open and 
 close the window.
 
 ## Connections
@@ -100,7 +100,7 @@ The sensors must be connected according this picture.
 The water level sensor power pin is connected to the pin D5 to power on it only during a
 measurement to avoid oxidations.
 
-If you prefer to change ypu pin connection, you can change editing in the file `src/gh_init.c` this values
+If you prefer to change your pin connection, you can change editing in the file `src/gh_init.c` this values
 ```C
 ...
 #define DHT_PIN                 GPIO_PIN(PORT_A, 10)    //D2
@@ -114,7 +114,7 @@ If you prefer to change ypu pin connection, you can change editing in the file `
 ```
 ## Network infrastructure
 ![Connection](resources/NetworkInfr.png)
-The RIOT software comunicate with an MQTT-SN broker ([Mosquitto RSMB](https://github.com/eclipse/mosquitto.rsmb)) 
+The RIOT firmware communicate with an MQTT-SN broker ([Mosquitto RSMB](https://github.com/eclipse/mosquitto.rsmb)) 
 that is connected to another 
 MQTT-SN/MQTT BROKER ([Mosquitto](https://mosquitto.org/)) that is connected via MQTT to Aws IoT Core.
 
@@ -123,7 +123,7 @@ process the message and store it on dynamoDB.
 
 The web page make an HTTPS request to a lambda function that provide the data stored on dynamoDB. While
 to control the actuators the web interface make an HTTPS request to a lambda function that send message to an
-MQTT topic.
+MQTT topic via AWS IoT Core.
 
 There are 2 topics:
 - **gh** this topic is used to send data outgoing from the greenhouse
@@ -132,11 +132,10 @@ There are 2 topics:
 In details the web interface doesn't make HTTPS request directly to the lambda function, but through another AWS 
 service called Gateway API
 
-To provide a network interface at the STM nucleo board emcute is used.
-
+To provide a network interface the STM nucleo board use emcute.
 
 ## How to run
-Mosquitto RSMB must be start with this config, so you need to create a new file `config.conf`
+Mosquitto RSMB must be started with this configuration, so you need to create a new file `config.conf`
 ```
 # add some debug output
 trace_output protocol
@@ -158,8 +157,10 @@ connection local_bridge_to_mosquitto
 And run the broker with this configuration
 > ./broker_mqtts config.conf
 
-We need also to run Mosquitto (yes, another Mosquitto, but not the RSMB), 
-with this configuration file (`mosquitto_config.conf`):
+We need also to run Mosquitto (yes, another Mosquitto, but not the RSMB version), in order to have
+a transparent gateway between Mosquitto RSMB and AWS IoT Core.
+
+Create this configuration file (`mosquitto_config.conf`):
 ```
 connection awsiot
 
@@ -204,10 +205,10 @@ Finally compile and execute the software on your STM nucleo f401re
 
 > make flash term
 
-The interface will ask you the sudo permission to configure tap in order to bridge the RIOT application
-to the network connection of your pc.
+The interface will ask you the sudo permissions to configure tap in order to bridge the RIOT application
+to the network of your pc.
 
 ### Assumption
 The project is not designed to be super fast, the phenomena observed is very slow (air humidity, temperature, soil moisture).
-It is not also design to be extremely power efficient, because we have to power the water pump with the 230V AC, so the board 
-will be powered by a power supply.
+It is not also design to be extremely power efficient, because we have to power the water pump with the 230V AC, so also
+the board will be powered by a power supply.
