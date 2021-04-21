@@ -1,10 +1,3 @@
-####
-#### Sample Makefile for building applications with the RIOT OS
-####
-#### The example file system layout is:
-#### ./application Makefile
-#### ../../RIOT
-####
 # Set the name of your application:
 APPLICATION = green_house
 # If no BOARD is found in the environment, use this default:
@@ -12,6 +5,11 @@ BOARD ?= nucleo-f401re
 
 # This has to be the absolute path to the RIOT base directory:
 RIOTBASE ?= $(CURDIR)/RIOT
+
+ifeq (nucleo-f401re,$(BOARD))
+	CFLAGS += -DUSE_STM32F401RE
+endif
+
 
 # Uncomment this to enable scheduler statistics for ps:
 #CFLAGS += -DSCHEDSTATISTICS
@@ -49,7 +47,10 @@ DIRS += $(CURDIR)/src
 USEMODULE += dht
 USEMODULE += xtimer
 USEMODULE += analog_util
-USEMODULE += servo
+
+ifeq (nucleo-f401re,$(BOARD))
+	USEMODULE += servo
+endif
 
 USEMODULE += shell
 uSEMODULE += shell_commands
@@ -65,10 +66,9 @@ USE_DHCPV6 ?= 0
 
 # If your application is very simple and doesn't use modules that use
 # messaging, it can be disabled to save some memory:
-
-#DISABLE_MODULE += core_msg
-FEATURES_REQUIRED += periph_adc
-
+ifeq (nucleo-f401re,$(BOARD))
+	FEATURES_REQUIRED += periph_adc
+endif
 # Uncomment this to enable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
 # development process:

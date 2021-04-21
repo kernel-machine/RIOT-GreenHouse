@@ -10,18 +10,27 @@
 #define DEGREE_TO_US(x) ((x*(SERVO_MAX-SERVO_MIN)/DEGREE_MAX)+SERVO_MIN)
 
 void servo_device_init(servo_device_t *servo_device, int pwm, int channel) {
+#ifdef USE_STM32F401RE
     servo_t *servo = &(servo_device->servo);
+#endif
     servo_device->degree = 0;
     servo_device->manual_override = 0;
+#ifdef USE_STM32F401RE
     servo_init(servo, PWM_DEV(pwm), channel, SERVO_MIN, SERVO_MAX);
     servo_set(servo, DEGREE_TO_US(0));
+#else
+    (void)pwm;
+    (void)channel;
+#endif
 
 }
 
 void servo_device_set_position(servo_device_t *servo_device, int degree) {
-    servo_t servo = servo_device->servo;
     servo_device->degree = degree;
+#ifdef USE_STM32F401RE
+    servo_t servo = servo_device->servo;
     servo_set(&servo, DEGREE_TO_US(degree));
+#endif
 }
 
 int servo_device_get_position(servo_device_t *servo_device) {
