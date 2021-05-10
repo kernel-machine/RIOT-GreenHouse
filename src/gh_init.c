@@ -15,6 +15,7 @@
 #include "convertion.h"
 #include "logic_condition.h"
 #include "emcute_connection.h"
+#include "udp.h"
 
 #include "../RIOT/sys/include/xtimer.h"
 #include "../RIOT/core/include/thread.h"
@@ -205,7 +206,12 @@ void gh_init(void) {
     //End logic condition
 
     green_house_scheduler_init();
+#ifdef USE_STM32F401RE
     init_connection();
+#else
+    char * server_port = UDP_SERVER_PORT;
+    start_server(server_port);
+#endif
 
     green_house_add_function(S2MS(MQTT_PUBLISH_RATE), publish_topic);
 

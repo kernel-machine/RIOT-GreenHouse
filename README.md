@@ -1,4 +1,6 @@
 # Greenhouse powered by RIOT OS
+- [First assignment](https://github.com/kernel-machine/RIOT-GreenHouse/tree/first_assignment)
+- [Second assignment](https://github.com/kernel-machine/RIOT-GreenHouse/tree/main)
 
 This project is an IoT Greenhouse based on nucleo-f401re and RIOT OS, the greenhouse is fully
 autonomous, it opens a windows when the indoor environment humidity is too high, and there is

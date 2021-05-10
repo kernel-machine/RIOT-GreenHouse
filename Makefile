@@ -37,6 +37,22 @@ USEMODULE += gnrc_netif_single
 USEMODULE += stdio_ethos
 USEMODULE += gnrc_uhcpc
 
+USEMODULE += gnrc_netdev_default
+USEMODULE += auto_init_gnrc_netif
+# Activate ICMPv6 error messages
+USEMODULE += gnrc_icmpv6_error
+# Specify the mandatory networking modules for IPv6 and UDP
+USEMODULE += gnrc_ipv6_router_default
+USEMODULE += gnrc_udp
+# Add a routing protocol
+USEMODULE += gnrc_rpl
+USEMODULE += auto_init_gnrc_rpl
+# This application dumps received packets to STDIO using the pktdump module
+USEMODULE += gnrc_pktdump
+# Additional networking modules that can be dropped if not needed
+USEMODULE += gnrc_icmpv6_echo
+# Add also the shell, some shell commands
+
 #Import devices and src folders
 USEMODULE += devices
 DIRS += $(CURDIR)/devices
@@ -86,11 +102,13 @@ SERVER_ADDR = fe80::1
 SERVER_PORT = 1885
 MQTT_TOPIC = gh
 MQTT_CMD_TOPIC = cmd
+UDP_SERVER_PORT = 8888
 
 CFLAGS += -DSERVER_ADDR='"$(SERVER_ADDR)"'
 CFLAGS += -DSERVER_PORT=$(SERVER_PORT)
 CFLAGS += -DMQTT_TOPIC='"$(MQTT_TOPIC)"'
 CFLAGS += -DMQTT_CMD_TOPIC='"$(MQTT_CMD_TOPIC)"'
+CFLAGS += -DUDP_SERVER_PORT='"$(UDP_SERVER_PORT)"'
 
 ETHOS_BAUDRATE ?= 115200
 include $(CURDIR)/Makefile.ethos.conf
