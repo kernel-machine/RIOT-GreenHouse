@@ -11,6 +11,8 @@
 
 #include "../RIOT/sys/include/shell.h"
 
+#include "udp.h"
+
 int print_temperature(int argc, char **argv) {
     (void) argc;
     (void) argv;
@@ -52,6 +54,30 @@ int print_soil_moisture(int argc, char **argv) {
     return 0;
 }
 
+int startUDPServer(int argc, char **argv) {
+    (void) argc;
+    (void) argv;
+    char *server_port = UDP_SERVER_PORT;
+    start_server(server_port);
+    return 0;
+}
+
+int stopUDPServer(int argc, char **argv) {
+    (void) argc;
+    (void) argv;
+    stop_server();
+    return 0;
+}
+
+int connectToUDP(int argc, char **argv) {
+    if (argc < 2)
+        printf("Usage - connect ip6_server_address");
+    else
+        setServerAddress(argv[1]);
+
+    return 0;
+}
+
 int set_servo_position(int argc, char **argv) {
     (void) argc;
     (void) argv;
@@ -61,8 +87,8 @@ int set_servo_position(int argc, char **argv) {
     }
     servo_device_t *device = device_manager_get_device(SERVO);
     int degree = atoi(argv[1]);
-    servo_device_set_manual_override(device,degree);
-    if(degree==-1){
+    servo_device_set_manual_override(device, degree);
+    if (degree == -1) {
         //servo_device_set_position(device, degree);
         servo_device_clear_manual_override(device);
     }
@@ -71,13 +97,17 @@ int set_servo_position(int argc, char **argv) {
 }
 
 static const shell_command_t shell_commands[] = {
-        {"temp",        "print env. temperature", print_temperature},
-        {"hum",         "print env. humidity",    print_humidity},
-        {"toggle_pump", "Toggle water pump",      pump_toggle},
-        {"soil",        "Print soil humidity",    print_soil_moisture},
-        {"level",       "Print water level",      print_water_level},
-        {"servo",       "Move servo",             set_servo_position},
-        {NULL,          NULL,                     NULL}
+        {"temp",         "print env. temperature",   print_temperature},
+        {"hum",          "print env. humidity",      print_humidity},
+        {"toggle_pump",  "Toggle water pump",        pump_toggle},
+        {"soil",         "Print soil humidity",      print_soil_moisture},
+        {"level",        "Print water level",        print_water_level},
+        {"servo",        "Move servo",               set_servo_position},
+        {"start_server", "Start the UDP server",     startUDPServer},
+        {"stop_server",  "Stop the UDP server",      stopUDPServer},
+        {"connect",      "Connect to an UDP server", connectToUDP},
+
+        {NULL,           NULL,                       NULL}
 };
 
 void command_wait_for_command(void) {

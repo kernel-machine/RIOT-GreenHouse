@@ -29,6 +29,7 @@
 #define SOIL_MOISTURE_ADC       ADC_LINE(2)             //A1
 #define RELAY_PIN               GPIO_PIN(PORT_A, 8)     //D7
 #define WATER_LEVEL_POWER_PIN   GPIO_PIN(PORT_B, 4)     //D5
+
 #define SERVO_CHANNEL           1
 #define SERVO_PWM               0
 
@@ -147,7 +148,11 @@ void publish_topic(void) {
     }
 
     strcat(str, "}");
+#ifdef USE_STM32F401RE
     emcute_publish(str);
+#else
+    send(str,1,0);
+#endif
 }
 
 
@@ -208,13 +213,11 @@ void gh_init(void) {
     green_house_scheduler_init();
 #ifdef USE_STM32F401RE
     init_connection();
-#else
-    char * server_port = UDP_SERVER_PORT;
-    start_server(server_port);
 #endif
 
-    green_house_add_function(S2MS(MQTT_PUBLISH_RATE), publish_topic);
-
+    if(is_server()) {
+        green_house_add_function(S2MS(MQTT_PUBLISH_RATE), publish_topic);
+    }
     //Scan device is done as soon as possible, but the device manager reads from sensor only if needed.
     green_house_add_function(0, scan_device_and_update_lc);
 

@@ -37,14 +37,35 @@
 #include "timex.h"
 #include "utlist.h"
 #include "xtimer.h"
+#include "string.h"
+#include "stdbool.h"
+
+#define MAIN_QUEUE_SIZE     (8)
+static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
 
 static gnrc_netreg_entry_t server = GNRC_NETREG_ENTRY_INIT_PID(GNRC_NETREG_DEMUX_CTX_ALL,
                                                                KERNEL_PID_UNDEF);
 
+char dest_addr[64];
+bool dest_address_setted = false;
+bool client = true;
 
-static void send(char *addr_str, char *port_str, char *data, unsigned int num,
+void setServerAddress(char * server_addr){
+    memset(dest_addr,0,64);
+
+    strcpy(dest_addr,server_addr);
+    dest_address_setted = true;
+}
+
+void send( char *data, unsigned int num,
                  unsigned int delay)
 {
+    if(!dest_address_setted)
+        return;
+
+    char *addr_str = dest_addr;
+    char *port_str = UDP_SERVER_PORT;
+
     gnrc_netif_t *netif = NULL;
     char *iface;
     uint16_t port;
@@ -137,9 +158,11 @@ void start_server(char *port_str)
     server.demux_ctx = (uint32_t)port;
     gnrc_netreg_register(GNRC_NETTYPE_UDP, &server);
     printf("Success: started UDP server on port %" PRIu16 "\n", port);
+    client = false;
+    msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
 }
 
-static void stop_server(void)
+void stop_server(void)
 {
     /* check if server is running at all */
     if (server.target.pid == KERNEL_PID_UNDEF) {
@@ -152,6 +175,14 @@ static void stop_server(void)
     puts("Success: stopped UDP server");
 }
 
+int is_server(void){
+    return !client;
+}
+
+int is_client(void){
+    return client;
+}
+/*
 int udp_cmd(int argc, char **argv)
 {
     if (argc < 2) {
@@ -199,3 +230,4 @@ int udp_cmd(int argc, char **argv)
     }
     return 0;
 }
+*/

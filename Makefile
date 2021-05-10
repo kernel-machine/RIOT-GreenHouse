@@ -8,8 +8,9 @@ RIOTBASE ?= $(CURDIR)/RIOT
 
 ifeq (nucleo-f401re,$(BOARD))
 	CFLAGS += -DUSE_STM32F401RE
+else ifeq (native,$(BOARD))
+	CFLAGS += -DUSE_NATIVE
 endif
-
 
 # Uncomment this to enable scheduler statistics for ps:
 #CFLAGS += -DSCHEDSTATISTICS
