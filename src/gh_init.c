@@ -15,7 +15,7 @@
 #include "convertion.h"
 #include "logic_condition.h"
 #include "emcute_connection.h"
-#include "udp.h"
+#include "random.h"
 
 #include "../RIOT/sys/include/xtimer.h"
 #include "../RIOT/core/include/thread.h"
@@ -82,6 +82,9 @@ static void scan_device_and_update_lc(void) {
 }
 
 void publish_topic(void) {
+    if(!is_connected())
+        return;
+
     const char out_size = 16;
     char out[out_size];
 
@@ -138,6 +141,7 @@ void publish_topic(void) {
                 strcat(str, "\"servo\":");
                 sprintf(out, "%d\n", (int) servo_device_get_position(device));
                 strcat(str, out);
+                strcat(str, ",");
                 break;
             default:
                 break;
@@ -147,17 +151,21 @@ void publish_topic(void) {
 
     }
 
+    memset(out, 0, out_size);
+    strcat(str, "\"nodeId\":");
+    sprintf(out, "%d\n", (int) get_node_id());
+    strcat(str, out);
+
     strcat(str, "}");
-#ifdef USE_STM32F401RE
     emcute_publish(str);
-#else
-    send(str,1,0);
-#endif
+    //send(str,1,0);
+
 }
 
 
 void gh_init(void) {
     xtimer_init();
+    random_init(RANDOM_SEED_DEFAULT);
 
     dht11_init(&dht, DHT_PIN);
 
@@ -211,13 +219,9 @@ void gh_init(void) {
     //End logic condition
 
     green_house_scheduler_init();
-#ifdef USE_STM32F401RE
-    init_connection();
-#endif
 
-    if(is_server()) {
-        green_house_add_function(S2MS(MQTT_PUBLISH_RATE), publish_topic);
-    }
+    green_house_add_function(S2MS(MQTT_PUBLISH_RATE), publish_topic);
+
     //Scan device is done as soon as possible, but the device manager reads from sensor only if needed.
     green_house_add_function(0, scan_device_and_update_lc);
 

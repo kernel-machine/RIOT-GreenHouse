@@ -7,7 +7,7 @@
 
 #include "../RIOT/sys/include/analog_util.h"
 #include "../RIOT/drivers/include/periph/adc.h"
-
+#include "fake_sensor.h"
 #define ADC_RESOLUTION ADC_RES_12BIT
 
 typedef struct analog_device_s {
@@ -16,6 +16,9 @@ typedef struct analog_device_s {
     int max_value;
     int min_value;
     int scaled;
+#ifdef FAKE_SENSOR
+    fake_sensor_t fakeSensor;
+#endif
 } analog_device_t;
 
 void analog_device_init(analog_device_t *device, adc_t adc);

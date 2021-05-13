@@ -17,6 +17,10 @@
 
 #include "jsmn.h"
 
+#include "net/emcute.h"
+#include "net/ipv6/addr.h"
+#include "msg.h"
+
 #ifndef EMCUTE_ID
 #define EMCUTE_ID           ("gertrud")
 #endif
@@ -29,11 +33,14 @@ char em_stack[THREAD_STACKSIZE_MAIN];
 static emcute_sub_t subscription;
 static char topics[TOPIC_MAXLEN];
 int can_access = 1;
+int id_node = 0;
 
 emcute_topic_t emcute_topic;
 
 jsmn_parser p;
 jsmntok_t t[MAX_JSON_TOKEN];
+
+int isConnected = 0;
 
 static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
     if (tok->type == JSMN_STRING && (int) strlen(s) == tok->end - tok->start &&
@@ -44,24 +51,34 @@ static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
 }
 
 void emcute_publish(char *str) {
+    if (!isConnected)
+        return;
     unsigned flags = EMCUTE_QOS_0;
     emcute_pub(&emcute_topic, str, strlen(str), flags);
+}
+
+int is_connected(void) {
+    return isConnected;
+}
+
+int get_node_id(void) {
+    return id_node;
 }
 
 static void *emcute_thread(void *arg) {
     (void) arg;
     emcute_run(CONFIG_EMCUTE_DEFAULT_PORT, EMCUTE_ID);
-    return NULL;    /* should never be reached */
+    return NULL;   // should never be reached
 }
 
 void on_pub_my(const emcute_topic_t *topic, void *data, size_t len) {
-    if (!can_access){
+    if (!can_access) {
         printf("ACCESS DENIED!\n");
         return;
     }
 
-    char * topic_name = MQTT_CMD_TOPIC;
-    if(strcmp(topic->name,topic_name)!=0)
+    char *topic_name = MQTT_CMD_TOPIC;
+    if (strcmp(topic->name, topic_name) != 0)
         return;
 
     can_access = 0;
@@ -71,7 +88,7 @@ void on_pub_my(const emcute_topic_t *topic, void *data, size_t len) {
         can_access = 1;
         return;
     }
-    /*
+
     printf("### got publication for topic '%s' [%i] ###\n",
            topic->name, (int) topic->id);
 
@@ -79,7 +96,7 @@ void on_pub_my(const emcute_topic_t *topic, void *data, size_t len) {
         printf("%c", in[i]);
     }
     puts("\n");
-     */
+
 
     memset(&p, 0, sizeof(jsmn_parser));
     memset(&t, 0, sizeof(jsmntok_t) * MAX_JSON_TOKEN);
@@ -149,8 +166,8 @@ void on_pub_my(const emcute_topic_t *topic, void *data, size_t len) {
     can_access = 1;
 }
 
-void init_connection(void) {
-    /* initialize our subscription buffers */
+void connect(char *server_addr, int node_id) {
+
     memset(&subscription, 0, sizeof(emcute_sub_t));
 
     thread_create(em_stack, sizeof(em_stack),
@@ -159,33 +176,30 @@ void init_connection(void) {
                   emcute_thread,
                   NULL, "emcute thread");
 
-    // connect to MQTT-SN broker
-    printf("Connecting to MQTT-SN broker %s port %d.\n",
-           SERVER_ADDR, SERVER_PORT);
-
     sock_udp_ep_t gw = {.family = AF_INET6, .port = SERVER_PORT};
-    char *topic = MQTT_TOPIC;
-    char *message = "connected";
+
+    char *topic = NULL;
+    char *message = NULL;
     size_t len = 0;
 
-    /* parse address */
-    if (ipv6_addr_from_str((ipv6_addr_t * ) & gw.addr.ipv6, SERVER_ADDR) == NULL) {
+    //parse address
+    if (ipv6_addr_from_str((ipv6_addr_t * ) & gw.addr.ipv6, server_addr) == NULL) {
         printf("error parsing IPv6 address\n");
         return;
     }
-    else printf("Parsed Pv6 address\n");
-
+    else
+        printf("Parsed Pv6 address\n");
 
     if (emcute_con(&gw, true, topic, message, len, 0) != EMCUTE_OK) {
-        printf("error: unable to connect to [%s]:%i\n", SERVER_ADDR,
+        printf("error: unable to connect to [%s]:%i\n", server_addr,
                (int) gw.port);
         return;
     }
 
     printf("Successfully connected to gateway at [%s]:%i\n",
-           SERVER_ADDR, (int) gw.port);
+           server_addr, (int) gw.port);
 
-    /* setup subscription to topic*/
+    //setup subscription to topic
     unsigned flags = EMCUTE_QOS_0;
     subscription.cb = on_pub_my;
     memset(topics, 0, TOPIC_MAXLEN);
@@ -201,8 +215,8 @@ void init_connection(void) {
     //Register topic to send
     emcute_topic.name = MQTT_TOPIC;
     emcute_reg(&emcute_topic);
-
-
+    isConnected = 1;
+    id_node = node_id;
 }
 
 

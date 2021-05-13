@@ -4,11 +4,16 @@
 #include "../RIOT/drivers/include/dht.h"
 #include "../RIOT/drivers/dht/include/dht_params.h"
 #include "../RIOT/drivers/include/periph/gpio.h"
+#include "fake_sensor.h"
 
 typedef struct dht11_device_s{
     dht_t dht;
     int last_temp;
     int last_hum;
+#ifdef FAKE_SENSOR
+    fake_sensor_t fakeTempSensor;
+    fake_sensor_t fakeHumSensor;
+#endif
 }dht11_device_t;
 
 void dht11_init(dht11_device_t * device, gpio_t pin);

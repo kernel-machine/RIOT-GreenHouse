@@ -10,8 +10,8 @@
 #include "../devices/devices_manager.h"
 #include "../RIOT/sys/include/net/emcute.h"
 
-void init_connection(void);
-
+void connect(char *server_addr, int node_id);
 void emcute_publish(char *str);
-
+int get_node_id(void);
+int is_connected(void);
 #endif //RIOT_GREENHOUSE_EMCUTE_CONNECTION_H
