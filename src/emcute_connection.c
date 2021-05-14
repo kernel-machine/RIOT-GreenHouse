@@ -21,9 +21,7 @@
 #include "net/ipv6/addr.h"
 #include "msg.h"
 
-#ifndef EMCUTE_ID
-#define EMCUTE_ID           ("gertrud")
-#endif
+
 
 #define TOPIC_MAXLEN        256
 #define MAX_JSON_TOKEN      128
@@ -36,6 +34,7 @@ int can_access = 1;
 
 int id_node = 0;
 int isSetted = 0;
+char nodeName[64];
 
 emcute_topic_t emcute_topic;
 
@@ -68,7 +67,7 @@ int get_node_id(void) {
 
 static void *emcute_thread(void *arg) {
     (void) arg;
-    emcute_run(CONFIG_EMCUTE_DEFAULT_PORT, EMCUTE_ID);
+    emcute_run(CONFIG_EMCUTE_DEFAULT_PORT, nodeName);
     return NULL;   // should never be reached
 }
 
@@ -169,6 +168,9 @@ void on_pub_my(const emcute_topic_t *topic, void *data, size_t len) {
 
 int set_connection(char *server_addr, int node_id) {
     id_node = node_id;
+
+    memset(nodeName,0,64);
+    sprintf(nodeName, "node%d", node_id);
 
     memset(&subscription, 0, sizeof(emcute_sub_t));
 
