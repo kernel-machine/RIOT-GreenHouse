@@ -120,6 +120,7 @@ void on_pub_my(const emcute_topic_t *topic, void *data, size_t len) {
     /* Loop over all keys of the root object */
     char name[10];
     char value[10];
+    char device_id[10];
     for (int i = 1; i < r; i++) {
         if (jsoneq(in, &t[i], "name") == 0) {
             /* We may use strndup() to fetch string value */
@@ -135,6 +136,13 @@ void on_pub_my(const emcute_topic_t *topic, void *data, size_t len) {
             //printf("value: %s\n", value);
             i++;
         }
+        else if (jsoneq(in, &t[i], "device_id") == 0) {
+            /* We may additionally check if the value is either "true" or "false" */
+            sprintf(device_id, "%.*s", t[i + 1].end - t[i + 1].start,
+                    in + t[i + 1].start);
+            //printf("value: %s\n", value);
+            i++;
+        }
         else {
             printf("Unexpected key: %.*s\n", t[i].end - t[i].start,
                    in + t[i].start);
@@ -143,22 +151,25 @@ void on_pub_my(const emcute_topic_t *topic, void *data, size_t len) {
 
     if (strlen(name) > 0 && strlen(value) > 0) {
         int int_value = atoi(value);
+        const int received_device_id = atoi(device_id);
+        if(received_device_id>0 && received_device_id==id_node) {
 
-        if (strcmp(name, "pump") == 0) {
-            digital_out_t *pump = device_manager_get_device(PUMP);
-            if (int_value)
-                digital_out_enable(pump);
-            else
-                digital_out_disable(pump);
+            if (strcmp(name, "pump") == 0) {
+                digital_out_t *pump = device_manager_get_device(PUMP);
+                if (int_value)
+                    digital_out_enable(pump);
+                else
+                    digital_out_disable(pump);
 
-        }
-        else if (strcmp(name, "servo") == 0) {
+            }
+            else if (strcmp(name, "servo") == 0) {
 
-            servo_device_t *device = device_manager_get_device(SERVO);
-            servo_device_set_manual_override(device, int_value);
-            if (int_value == -1) {
-                //servo_device_set_position(device, degree);
-                servo_device_clear_manual_override(device);
+                servo_device_t *device = device_manager_get_device(SERVO);
+                servo_device_set_manual_override(device, int_value);
+                if (int_value == -1) {
+                    //servo_device_set_position(device, degree);
+                    servo_device_clear_manual_override(device);
+                }
             }
         }
     }
