@@ -33,14 +33,15 @@ char em_stack[THREAD_STACKSIZE_MAIN];
 static emcute_sub_t subscription;
 static char topics[TOPIC_MAXLEN];
 int can_access = 1;
+
 int id_node = 0;
+int isSetted = 0;
 
 emcute_topic_t emcute_topic;
 
 jsmn_parser p;
 jsmntok_t t[MAX_JSON_TOKEN];
 
-int isConnected = 0;
 
 static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
     if (tok->type == JSMN_STRING && (int) strlen(s) == tok->end - tok->start &&
@@ -51,15 +52,15 @@ static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
 }
 
 void emcute_publish(char *str) {
-    if (!isConnected)
-        return;
-    unsigned flags = EMCUTE_QOS_0;
-    emcute_pub(&emcute_topic, str, strlen(str), flags);
+    if (isSetted) {
+        unsigned flags = EMCUTE_QOS_0;
+        int res = emcute_pub(&emcute_topic, str, strlen(str), flags);
+        if (res != EMCUTE_OK) {
+            printf("Error while publishing %d\n",res);
+        }
+    }
 }
 
-int is_connected(void) {
-    return isConnected;
-}
 
 int get_node_id(void) {
     return id_node;
@@ -166,7 +167,8 @@ void on_pub_my(const emcute_topic_t *topic, void *data, size_t len) {
     can_access = 1;
 }
 
-void connect(char *server_addr, int node_id) {
+int set_connection(char *server_addr, int node_id) {
+    id_node = node_id;
 
     memset(&subscription, 0, sizeof(emcute_sub_t));
 
@@ -175,6 +177,7 @@ void connect(char *server_addr, int node_id) {
                   THREAD_CREATE_STACKTEST,
                   emcute_thread,
                   NULL, "emcute thread");
+
 
     sock_udp_ep_t gw = {.family = AF_INET6, .port = SERVER_PORT};
 
@@ -185,7 +188,7 @@ void connect(char *server_addr, int node_id) {
     //parse address
     if (ipv6_addr_from_str((ipv6_addr_t * ) & gw.addr.ipv6, server_addr) == NULL) {
         printf("error parsing IPv6 address\n");
-        return;
+        return 0;
     }
     else
         printf("Parsed Pv6 address\n");
@@ -193,7 +196,7 @@ void connect(char *server_addr, int node_id) {
     if (emcute_con(&gw, true, topic, message, len, 0) != EMCUTE_OK) {
         printf("error: unable to connect to [%s]:%i\n", server_addr,
                (int) gw.port);
-        return;
+        return 0;
     }
 
     printf("Successfully connected to gateway at [%s]:%i\n",
@@ -207,7 +210,7 @@ void connect(char *server_addr, int node_id) {
 
     if (emcute_sub(&subscription, flags) != EMCUTE_OK) {
         printf("error: unable to subscribe to %s\n", MQTT_CMD_TOPIC);
-        return;
+        return 0;
     }
     else
         printf("Now subscribed to %s\n", MQTT_CMD_TOPIC);
@@ -215,8 +218,7 @@ void connect(char *server_addr, int node_id) {
     //Register topic to send
     emcute_topic.name = MQTT_TOPIC;
     emcute_reg(&emcute_topic);
-    isConnected = 1;
-    id_node = node_id;
+    isSetted = 1;
+
+    return 1;
 }
-
-

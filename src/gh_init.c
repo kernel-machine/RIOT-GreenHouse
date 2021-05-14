@@ -82,8 +82,6 @@ static void scan_device_and_update_lc(void) {
 }
 
 void publish_topic(void) {
-    if(!is_connected())
-        return;
 
     const char out_size = 16;
     char out[out_size];
@@ -158,7 +156,6 @@ void publish_topic(void) {
 
     strcat(str, "}");
     emcute_publish(str);
-    //send(str,1,0);
 
 }
 

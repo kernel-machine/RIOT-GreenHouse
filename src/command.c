@@ -90,7 +90,7 @@ int connect_mqtt(int argc, char **argv) {
     (void) argc;
     (void) argv;
     if (argc > 2) {
-        connect(argv[1],atoi(argv[2]));
+        set_connection(argv[1],atoi(argv[2]));
     }
     else{
         printf("Usage: %s <broker_addr> <node_id>\n",argv[0]);
