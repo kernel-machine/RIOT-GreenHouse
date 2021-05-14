@@ -61,6 +61,7 @@
       </my-graph>
 
     </div>
+    <SensorSelector/>
   </div>
 </template>
 
@@ -76,10 +77,12 @@ const axios = require('axios').default;
 import MinMaxAvg from "@/components/MinMaxAvg";
 import moment from "moment"
 import ButtonPanel from "@/components/ButtonPanel";
+import SensorSelector from "./SensorSelector";
 
 export default {
   name: "Sensors",
   components: {
+    SensorSelector,
     ButtonPanel,
     MyGraph,
     MinMaxAvg,
