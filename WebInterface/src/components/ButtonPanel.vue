@@ -13,17 +13,20 @@ import axios from "axios";
 
 export default {
   name: "ButtonPanel",
+  props: ['device'],
   methods: {
     togglePump(state) {
       axios.post("https://s68cxgvow4.execute-api.us-east-1.amazonaws.com/default/publishData", {
         "name": "pump",
-        "value": state
+        "value": state,
+        "device_id":this.device,
       })
     },
     toggleWindow(state) {
       axios.post("https://s68cxgvow4.execute-api.us-east-1.amazonaws.com/default/publishData", {
         "name": "servo",
-        "value": state ? 180 : 0
+        "value": state ? 180 : 0,
+        "device_id":this.device,
       }).then(d => {
         console.log(d.data)//dati ricevuti
       })
