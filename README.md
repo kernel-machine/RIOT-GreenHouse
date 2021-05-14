@@ -9,6 +9,9 @@ in such a way that if the tank is dry, the pump isn't turn on to avoid to damage
 
 The greenhouse can be monitored by the [web interface](https://kernel-machine.github.io/RIOT-GreenHouse/)
 
+### How to set up in the IotLab (Seconds Assignment)
+[Setup Tutorial](https://github.com/kernel-machine/RIOT-GreenHouse/tree/main/Setup.md)
+
 The advantages of having an IoT greenhouse are:
 - The plants are always in a ideal environment, with the right soil moisture and air humidity
 - The plants are watered even if the user are not present and the user can controls remotely that the plants are fine
@@ -27,6 +30,8 @@ Tha actuators are:
 
 All sensor sensor are periodically fetched, with the interval setted in `Makefile.conf.include`.
 
+In the version for the Iot Lab (2° and 3° assignment) sensors generate dummy data as default, you can disable this setting
+ adding the option `FAKE=0` when compile
 ### Actions
 The SERVO MOTOR the open the window is activated by this rule:
 
