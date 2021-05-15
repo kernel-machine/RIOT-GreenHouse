@@ -7,3 +7,5 @@ IoT core, this function process the message and store it on dynamoDB.
   
 - in `generateMQTTMessage.js` there is the lambda that generate an MQTT message when it is called
 by the web interface, this is used to control the actuators manually.
+  
+- in `getValuesByNode.js` there is the lambda function that returns all value of a specific device
