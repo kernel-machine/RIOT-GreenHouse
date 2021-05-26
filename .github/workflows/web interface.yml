@@ -22,7 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setting
-      run: cd .src//WebInterface && npm install
+      run: cd .src/WebInterface && npm install
     - name: Build
       run: cd .src/WebInterface && npm run build
     - name: Deploy to GitHub Pages
@@ -31,6 +31,6 @@ jobs:
       uses: crazy-max/ghaction-github-pages@v2.3.0
       with:
         # Build directory to deploy
-        build_dir: .src//WebInterface/dist
+        build_dir: .src/WebInterface/dist
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
