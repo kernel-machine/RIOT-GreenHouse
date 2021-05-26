@@ -5,9 +5,9 @@
 #ifndef GREENHOUSE_DIGITAL_OUT_H
 #define GREENHOUSE_DIGITAL_OUT_H
 
-#include "../RIOT/drivers/include/periph/gpio.h"
-#include "../RIOT/sys/include/xtimer.h"
-#include "../RIOT/core/include/thread.h"
+#include "../../../RIOT/drivers/include/periph/gpio.h"
+#include "../../../RIOT/sys/include/xtimer.h"
+#include "../../../RIOT/core/include/thread.h"
 
 typedef struct digital_out_s {
     gpio_t pin;

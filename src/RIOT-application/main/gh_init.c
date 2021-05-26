@@ -17,8 +17,8 @@
 #include "emcute_connection.h"
 #include "random.h"
 
-#include "../RIOT/sys/include/xtimer.h"
-#include "../RIOT/core/include/thread.h"
+#include "../../../RIOT/sys/include/xtimer.h"
+#include "../../../RIOT/core/include/thread.h"
 
 #include "stdio.h"
 #include "stdlib.h"
@@ -224,6 +224,6 @@ void gh_init(void) {
 
     //Starts to scan sensor and logic conditions
     green_house_scheduler_start();
-
+    set_connection(1);
     command_wait_for_command();
 }

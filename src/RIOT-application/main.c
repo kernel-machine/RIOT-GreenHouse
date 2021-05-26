@@ -1,4 +1,4 @@
-#include "src/gh_init.h"
+#include "main/gh_init.h"
 
 int main(void) {
     gh_init();

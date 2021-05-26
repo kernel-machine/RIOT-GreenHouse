@@ -4,8 +4,8 @@
 
 #include "devices_manager.h"
 
-#include "../src/emcute_connection.h"
-#include "../src/convertion.h"
+#include "../main/emcute_connection.h"
+#include "../main/convertion.h"
 
 #include "analog_device.h"
 #include "dht11.h"

@@ -5,7 +5,7 @@
 #ifndef GREENHOUSE_SENSOR_SCAN_H
 #define GREENHOUSE_SENSOR_SCAN_H
 
-#include "../RIOT/sys/include/xtimer.h"
+#include "../../../RIOT/sys/include/xtimer.h"
 
 typedef struct scheduled_function_s{
     time_t next_schedule;

@@ -1,9 +1,9 @@
 #ifndef RIOT_GREENHOUSE_FAKE_SENSOR_H
 #define RIOT_GREENHOUSE_FAKE_SENSOR_H
 
-#include "../RIOT/sys/include/xtimer.h"
+#include "../../../RIOT/sys/include/xtimer.h"
 #include "random.h"
-#include "../src/convertion.h"
+#include "../main/convertion.h"
 
 typedef struct fake_sensor_s {
     int direction;

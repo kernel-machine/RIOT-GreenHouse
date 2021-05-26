@@ -1,9 +1,9 @@
 #ifndef RIOT_DHT11_H
 #define RIOT_DHT11_H
 
-#include "../RIOT/drivers/include/dht.h"
-#include "../RIOT/drivers/dht/include/dht_params.h"
-#include "../RIOT/drivers/include/periph/gpio.h"
+#include "../../../RIOT/drivers/include/dht.h"
+#include "../../../RIOT/drivers/dht/include/dht_params.h"
+#include "../../../RIOT/drivers/include/periph/gpio.h"
 #include "fake_sensor.h"
 
 typedef struct dht11_device_s{

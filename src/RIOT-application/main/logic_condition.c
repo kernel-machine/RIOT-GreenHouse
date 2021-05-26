@@ -4,9 +4,9 @@
 
 #include "logic_condition.h"
 
-#include "../src/convertion.h"
+#include "convertion.h"
 
-#define MAX_LOGIC_CONDITION 16
+#define MAX_LOGIC_CONDITION 8
 
 logic_condition_t logic_conditions[MAX_LOGIC_CONDITION];
 
@@ -67,8 +67,6 @@ void logic_condition_set_interval(const logic_condition_t *condition, time_t int
     cond->interval = interval_ms;
     cond->next_schedule = US2MS(xtimer_now_usec()) + interval_ms;
 }
-
-#include "stdio.h"
 
 void logic_condition_update(void) {
     for (int i = 0; i < MAX_LOGIC_CONDITION; i++) {

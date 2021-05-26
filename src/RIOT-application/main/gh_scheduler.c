@@ -10,7 +10,7 @@
 #include "../devices/analog_device.h"
 #include "../devices/dht11.h"
 
-#include "../RIOT/sys/include/xtimer.h"
+#include "../../../RIOT/sys/include/xtimer.h"
 #include "logic_condition.h"
 #include "convertion.h"
 

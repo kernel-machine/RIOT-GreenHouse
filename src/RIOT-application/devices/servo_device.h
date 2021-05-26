@@ -5,8 +5,8 @@
 #ifndef GREENHOUSE_SERVO_DEVICE_H
 #define GREENHOUSE_SERVO_DEVICE_H
 
-#include "../RIOT/drivers/include/servo.h"
-#include "../RIOT/drivers/include/periph/gpio.h"
+#include "../../../RIOT/drivers/include/servo.h"
+#include "../../../RIOT/drivers/include/periph/gpio.h"
 
 typedef struct servo_device_s {
     servo_t servo;

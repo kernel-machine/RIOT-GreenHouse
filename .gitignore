@@ -1,3 +1,8 @@
 /bin/
-/WebInterface/node_modules/
-/WebInterface/package-lock.json
+/src/RIOT/*
+/src/WebInterface/dist/
+/src/WebInterface/node_modules/
+/src/WebInterface/package-lock.json
+/src/WebInterface/yarn.lock
+/src/RIOT-application/bin/
+/src/WebInterface/.idea/

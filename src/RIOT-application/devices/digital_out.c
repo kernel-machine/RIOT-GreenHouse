@@ -3,7 +3,7 @@
 //
 
 #include "digital_out.h"
-#include "../src/convertion.h"
+#include "../main/convertion.h"
 
 #define HYSTERESIS_THRESHOLD 1000
 

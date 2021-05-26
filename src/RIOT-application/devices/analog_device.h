@@ -5,8 +5,8 @@
 #ifndef ANALOG_DEVICE_H
 #define ANALOG_DEVICE_H
 
-#include "../RIOT/sys/include/analog_util.h"
-#include "../RIOT/drivers/include/periph/adc.h"
+#include "../../../RIOT/sys/include/analog_util.h"
+#include "../../../RIOT/drivers/include/periph/adc.h"
 #include "fake_sensor.h"
 #define ADC_RESOLUTION ADC_RES_12BIT
 
