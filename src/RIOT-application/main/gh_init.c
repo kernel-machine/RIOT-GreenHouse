@@ -103,43 +103,37 @@ void publish_topic(void) {
             case PUMP:
                 memset(out, 0, out_size);
                 strcat(str, "\"pump\":");
-                sprintf(out, "%d\n", digital_out_get_current_state(device));
+                sprintf(out, "%d,\n", digital_out_get_current_state(device));
                 strcat(str, out);
-                strcat(str, ",");
                 break;
             case WATER_LEVEL:
                 memset(out, 0, out_size);
                 strcat(str, "\"water_level\":");
-                sprintf(out, "%d\n", ((analog_device_t *) device)->scaled);
+                sprintf(out, "%d,\n", ((analog_device_t *) device)->scaled);
                 strcat(str, out);
-                strcat(str, ",");
                 break;
             case SOIL_MOISTURE:
                 memset(out, 0, out_size);
                 strcat(str, "\"soil\":");
-                sprintf(out, "%d\n", ((analog_device_t *) device)->scaled);
+                sprintf(out, "%d,\n", ((analog_device_t *) device)->scaled);
                 strcat(str, out);
-                strcat(str, ",");
                 break;
             case TEMP_HUM:
                 memset(out, 0, out_size);
                 strcat(str, "\"temp\":");
-                sprintf(out, "%d\n", (int) dht11_get_temp(device));
+                sprintf(out, "%d,\n", (int) dht11_get_temp(device));
                 strcat(str, out);
-                strcat(str, ",");
 
                 memset(out, 0, out_size);
                 strcat(str, "\"hum\":");
-                sprintf(out, "%d\n", (int) dht11_get_hum(device));
+                sprintf(out, "%d,\n", (int) dht11_get_hum(device));
                 strcat(str, out);
-                strcat(str, ",");
                 break;
             case SERVO:
                 memset(out, 0, out_size);
                 strcat(str, "\"servo\":");
-                sprintf(out, "%d\n", (int) servo_device_get_position(device));
+                sprintf(out, "%d,\n", (int) servo_device_get_position(device));
                 strcat(str, out);
-                strcat(str, ",");
                 break;
             default:
                 break;

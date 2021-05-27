@@ -6,3 +6,4 @@
 /src/WebInterface/yarn.lock
 /src/RIOT-application/bin/
 /src/WebInterface/.idea/
+/src/EdgeSoftware/mqtt-ca.pem
