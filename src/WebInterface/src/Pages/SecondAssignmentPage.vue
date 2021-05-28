@@ -3,7 +3,7 @@
     <loading :active.sync="isLoading"
              :can-cancel="false"
              :is-full-page="true"></loading>
-    <a>Select a node </a>
+    <p>Select a node </p>
     <select v-if="this.devices.length>0" v-model="selectedDevice">
       <option v-for="item in this.devices" :key="item" :value="item" :selected="(item===-1)">
         {{ "Node " + (item === -1 ? "all" : item) }}
@@ -77,10 +77,10 @@ const axios = require('axios').default;
 import MinMaxAvg from "@/components/MinMaxAvg";
 import moment from "moment"
 import ButtonPanel from "@/components/ButtonPanel";
-import SensorSelector from "./SensorSelector";
+import SensorSelector from "../components/SensorSelector";
 
 export default {
-  name: "Sensors",
+  name: "SecondAssignmentPage",
   components: {
     SensorSelector,
     ButtonPanel,
