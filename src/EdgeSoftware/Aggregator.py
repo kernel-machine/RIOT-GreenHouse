@@ -81,3 +81,9 @@ class Aggregator:
 
     def are_there_some_data(self):
         return self.temp_counter > 0 and self.hum_counter > 0 and self.soil_counter > 0
+
+    def hash_code(self):
+        str_values = str(self.temp_sum) + str(self.temp_sum) \
+                     + str(self.hum_sum) + str(self.hum_counter) \
+                     + str(self.soil_sum) + str(self.soil_counter)
+        return hash(str_values)

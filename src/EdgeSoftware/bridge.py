@@ -13,7 +13,7 @@ from signal import signal, SIGINT
 TTN_HOST = "eu.thethings.network"
 TTN_PORT = 8883
 TTN_USERNAME = "greenhouse-km"  # Put here your application-id
-TTN_PASSWORD = "ttn-account-v2.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # Put here your application process key
+TTN_PASSWORD = "ttn-account-v2.GioWfbe3v7tW6WEA1M_SXwCMO1pKeRMRc3dmPQc0pco"  # Put here your application process key
 TTN_CA_CERT = "mqtt-ca.pem"  # Path to your The Things Network CA
 
 AWS_HOST = "a3paxdkh0ekdqh-ats.iot.us-east-1.amazonaws.com"  # AWS endpoint
@@ -77,14 +77,17 @@ class Bridge:
         self.aggregator.add_hum(hum)
         self.aggregator.add_soil(soil)
 
+        print("Received message from The Things Network")
+
     def send_aggregated_data(self):
-        last_hash = hash(self.aggregator)
+        last_hash = self.aggregator.hash_code()
         last_time_ms = time.time_ns() / 1000
         while self.run:
             now_in_ms = time.time_ns() / 1000
             should_be_re_run = now_in_ms - last_time_ms > AGGREGATED_VALUE_SEND_INTERVAL_MS
+
             if should_be_re_run and self.isLocalConnected and self.aggregator.are_there_some_data() \
-                    and last_hash != hash(self.aggregator):
+                    and last_hash != self.aggregator.hash_code():
                 last_time_ms = time.time_ns() / 1000
                 msg = {
                     "temp_max": self.aggregator.get_temp_max(),
@@ -98,7 +101,8 @@ class Bridge:
                     "soil_avg": self.aggregator.get_soil_avg(),
                 }
                 self.clientAWS.publish("gh_aggr", json.dumps(msg))
-                last_hash = hash(self.aggregator)
+                print("Data sent", msg)
+                last_hash = self.aggregator.hash_code()
 
             time.sleep(1)
 
