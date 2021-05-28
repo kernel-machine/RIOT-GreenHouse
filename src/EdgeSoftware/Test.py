@@ -68,6 +68,17 @@ class TestAggregator(unittest.TestCase):
         self.assertEqual(self.aggregator.get_soil_avg(), get_array_avg(values))
         self.assertEqual(self.aggregator.get_soil_min(), get_array_min(values))
 
+    def test_hash(self):
+        self.aggregator = Aggregator()
+        last_hash = self.aggregator.hash_code()
+        for e in range(10):
+            self.aggregator.add_soil(random.randint(0, 100))
+            self.aggregator.add_hum(random.randint(0, 100))
+            self.aggregator.add_temperature(random.randint(0, 100))
+
+            self.assertNotEqual(last_hash, self.aggregator.hash_code())
+            last_hash = self.aggregator.hash_code()
+
 
 if __name__ == '__main__':
     unittest.main()
