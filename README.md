@@ -16,8 +16,8 @@ The advantages of having an IoT greenhouse are:
 - If well tuned it can save water, watering only if needed with the optimal quantity
 
 ### Second Assignment
-- [Technical details](https://github.com/kernel-machine/RIOT-GreenHouse/blob/second_assignment/Tech.md)
-- [Setup 802.15.4 mesh network](https://github.com/kernel-machine/RIOT-GreenHouse/blob/second_assignment/Setup.md)
-- [Evaluation](https://github.com/kernel-machine/RIOT-GreenHouse/blob/second_assignment/Evaluation.md)
+- [Technical details](./Tech.md)
+- [Setup 802.15.4 mesh network](./Setup.md)
+- [Evaluation](./Evaluation.md)
 
 
