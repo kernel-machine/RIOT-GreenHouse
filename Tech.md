@@ -83,7 +83,7 @@ close the window.
 
 ## Connections
 The sensors must be connected according this picture.
-![Connection](resources/Connection_bb.png)
+![Connection](resources/images/Connection_bb.png)
 The water level sensor power pin is connected to the pin D5 to power on it only during a
 measurement to avoid oxidations.
 
@@ -198,7 +198,7 @@ Add a function to the scheduler, the function `publish_topic` will be called eve
 }
 ```
 ## Network infrastructure and software cloud component
-![Connection](resources/NetworkInfr.png)
+![Connection](resources/images/NetworkInfr.png)
 The RIOT firmware communicate with an MQTT-SN broker ([Mosquitto RSMB](https://github.com/eclipse/mosquitto.rsmb))
 that is connected to another
 MQTT-SN/MQTT BROKER ([Mosquitto](https://mosquitto.org/)) that is connected via MQTT to Aws IoT Core.
@@ -221,7 +221,7 @@ To provide a network interface the STM nucleo board use emcute.
 
 ## Network infrastructure with 6LoWPAN (2° assignment)
 
-![network diagram](resources/network_diagram_6LoWPAN.png)
+![network diagram](resources/images/network_diagram_6LoWPAN.png)
 
 This is the network diagram of the network deployed on the IoT Lab to connect devices via 6LoWPAN.
 The **red link** is the **logical link**, so it doesn't represent a physical link.

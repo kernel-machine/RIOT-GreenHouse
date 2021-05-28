@@ -41,7 +41,7 @@ When the experiment is submitted and launched, you have to execute these steps:
           - To get the ip6 address:
             - Connect to the A8 node `ssh root@node-a8-X`
             - enter `ifconfig` to get the ip6 address
-            ![a8 node ip6 address](resources/a8ip6.png)
+            ![a8 node ip6 address](../../resources/images/a8ip6.png)
 - Now we can run the MQTT and MQTTS brokers
   - Connect via SSH to the a8 node `ssh root@node-a8-X`
   - Run Mosquitto `mosquitto -c bridge.conf` the configuration file is the one created previously.
