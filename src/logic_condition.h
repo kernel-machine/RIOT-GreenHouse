@@ -6,7 +6,7 @@
 #define RIOT_GREENHOUSE_LOGIC_CONDITION_H
 
 #include "stdlib.h"
-#include "../RIOT/sys/include/xtimer.h"
+#include "xtimer.h"
 
 typedef enum {
     LESS,

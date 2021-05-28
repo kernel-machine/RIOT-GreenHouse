@@ -8,7 +8,7 @@
 #include "stddef.h"
 #include "stdint.h"
 #include "../devices/devices_manager.h"
-#include "../RIOT/sys/include/net/emcute.h"
+#include "net/emcute.h"
 
 int set_connection(char *server_addr, int node_id);
 void emcute_publish(char *str);

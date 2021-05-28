@@ -1,7 +1,7 @@
 #ifndef RIOT_GREENHOUSE_FAKE_SENSOR_H
 #define RIOT_GREENHOUSE_FAKE_SENSOR_H
 
-#include "../RIOT/sys/include/xtimer.h"
+#include "xtimer.h"
 #include "random.h"
 #include "../src/convertion.h"
 

@@ -9,7 +9,7 @@
 #include "../devices/devices_manager.h"
 #include "../devices/servo_device.h"
 
-#include "../RIOT/sys/include/shell.h"
+#include "shell.h"
 
 #include <stdio.h>
 
