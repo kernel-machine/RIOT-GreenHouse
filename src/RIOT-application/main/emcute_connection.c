@@ -43,38 +43,10 @@ static uint8_t deveui[LORAMAC_DEVEUI_LEN];
 static uint8_t appeui[LORAMAC_APPEUI_LEN];
 static uint8_t appkey[LORAMAC_APPKEY_LEN];
 
-/*
-static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
-    if (tok->type == JSMN_STRING && (int) strlen(s) == tok->end - tok->start &&
-        strncmp(json + tok->start, s, tok->end - tok->start) == 0) {
-        return 0;
-    }
-    return -1;
-}*/
-
-
-
 int get_node_id(void) {
     return id_node;
 }
-/*
-static void rtc_cb(void *arg)
-{
-    (void) arg;
-    msg_t msg;
-    msg_send(&msg, sender_pid);
-}*/
-/*
-static void _prepare_next_alarm(void)
-{
-    struct tm time;
-    rtc_get_time(&time);
-    // set initial alarm
-    time.tm_sec += PERIOD;
-    mktime(&time);
-    rtc_set_alarm(&time, rtc_cb, NULL);
-}
-*/
+
 static void _send_message(char * message)
 {
     printf("Sending: %s\n", message);
@@ -92,30 +64,6 @@ void emcute_publish(char *str) {
         _send_message(str);
     }
 }
-
-/*
-static void *sender(void *arg)
-{
-    (void)arg;
-
-    msg_t msg;
-    msg_t msg_queue[8];
-    msg_init_queue(msg_queue, 8);
-
-    while (1) {
-        msg_receive(&msg);
-
-        // Trigger the message send
-        _send_message("Ciao");
-
-        //Schedule the next wake-up alarm
-        _prepare_next_alarm();
-    }
-
-    // this should never be reached
-    return NULL;
-}*/
-
 
 int set_connection(int node_id) {
     id_node = node_id;
@@ -148,15 +96,6 @@ int set_connection(int node_id) {
         return 1;
     }
     puts("Join procedure succeeded");
-
-    /*
-    // start the sender thread
-    sender_pid = thread_create(sender_stack, sizeof(sender_stack),
-                               SENDER_PRIO, 0, sender, NULL, "sender");
-
-    // trigger the first send
-    msg_t msg;
-    msg_send(&msg, sender_pid);*/
 
     return 1;
 }

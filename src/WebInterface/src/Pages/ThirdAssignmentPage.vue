@@ -8,21 +8,21 @@
       <p>
         <b>min:</b> {{ this.received_data.temp_min }} °C
         <b>avg:</b> {{ this.received_data.temp_max }} °C
-        <b>max:</b> {{ this.received_data.temp_avg }} °C
+        <b>max:</b> {{ this.received_data.temp_avg.toFixed(2) }} °C
       </p>
 
       <h3 :style="{color:this.HUMIDITY_COLOR}"><b>Humidity</b></h3>
       <p>
         <b>min:</b> {{ this.received_data.hum_min }} %
         <b>avg:</b> {{ this.received_data.hum_max }} %
-        <b>max:</b> {{ this.received_data.hum_avg }} %
+        <b>max:</b> {{ this.received_data.hum_avg.toFixed(2) }} %
       </p>
 
       <h3 :style="{color:this.SOIL_COLOR}"><b>Soil moisture</b></h3>
       <p>
         <b>min:</b> {{ this.received_data.soil_min }} %
         <b>avg:</b> {{ this.received_data.soil_max }} %
-        <b>max:</b> {{ this.received_data.soil_avg }} %
+        <b>max:</b> {{ this.received_data.soil_avg.toFixed(2) }} %
       </p>
       <br>
       <p>
