@@ -69,6 +69,6 @@ The LoRaWAN gateway is part of The Things Network.
 
 -  **AWS Services**
 
-  - The messages incoming in the **IoT core** are forwarded to the **lambda function** [storeAggregatedValue.js](../../src/AWS/storeAggregatedValue.js) that stores the message on DynamoDB.
+  - The messages incoming in the **IoT core** are forwarded to the **lambda function** [storeAggregatedValue.js](../../src/AWS/lambda%20functions/storeAggregatedValue.js) that stores the message on DynamoDB.
   - In **DynamoDB** is present only one row that are overwrite for each new message
-  - When the **web interface** make an HTTPS request, the lambda function [getAggregatedValue.js](../../src/AWS/getAggregatedValue.js) retrieves the current data from DynamoDB.
+  - When the **web interface** make an HTTPS request, the lambda function [getAggregatedValue.js](../../src/AWS/lambda%20functions/getAggregatedValue.js) retrieves the current data from DynamoDB.
