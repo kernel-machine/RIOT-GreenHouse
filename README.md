@@ -20,4 +20,6 @@ The advantages of having an IoT greenhouse are:
 - [Setup 802.15.4 mesh network](./docs/SecondAssignment/Setup6LoWPAN.md)
 - [Evaluation](./docs/SecondAssignment/Evaluation.md)
 
+### Third Assignment
+- [LoRaWAN analysis](./docs/ThirdAssignment)
 
