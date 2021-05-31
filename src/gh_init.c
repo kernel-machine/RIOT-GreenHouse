@@ -1,7 +1,3 @@
-//
-// Created by luca on 15/03/21.
-//
-
 #include "gh_init.h"
 
 #include "../devices/dht11.h"
