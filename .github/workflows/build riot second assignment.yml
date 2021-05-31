@@ -41,5 +41,5 @@ jobs:
           git checkout 2021.04-branch
       - name: Building main
         run: |
-          git checkout second_assignment
+          git checkout origin/second_assignment
           make
