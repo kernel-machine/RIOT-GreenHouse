@@ -1,7 +1,12 @@
+/*
+    A Fake sensor is a sensor that produces dummy data. It is used during IoT-LAB
+    experiments when there isn't a real sensor connected at the board.
+*/
+
 #ifndef RIOT_GREENHOUSE_FAKE_SENSOR_H
 #define RIOT_GREENHOUSE_FAKE_SENSOR_H
 
-#include "../../../RIOT/sys/include/xtimer.h"
+#include "xtimer.h"
 #include "random.h"
 #include "../main/convertion.h"
 

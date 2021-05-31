@@ -16,7 +16,7 @@
       APPKEY ?= <APPLICATION KEY>
       ```
 
-    - If you use more than one devices, put a unique integer for each device in:
+    - If you use more than one device, put a unique integer for each device in:
 
       ```
       NODE_ID ?= 1
@@ -28,6 +28,9 @@
     cd src/riot-application
     make
     ```
+    By default, the output data returned by the sensor are replaced with dummy data, if you want to use real sensors
+    you have to pass the parameter `FAKE=0` to the `make` command
+    
 
 - Setup AWS software
 

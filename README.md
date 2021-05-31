@@ -26,3 +26,5 @@ The advantages of having an IoT greenhouse are:
 - [How to run](./docs/ThirdAssignment/HowToRun.md)
 - [LoRaWAN analysis](./docs/ThirdAssignment)
 
+### Additional materials
+- [Blog post](https://luca-giovannesi.medium.com/diy-iot-greenhouse-ef70b42969fa)

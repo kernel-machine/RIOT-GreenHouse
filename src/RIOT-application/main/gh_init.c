@@ -33,8 +33,6 @@
 #define SERVO_CHANNEL           1
 #define SERVO_PWM               0
 
-#define MQTT_PUBLISH_RATE       60  //One message every 60 seconds
-
 dht11_device_t dht;
 analog_device_t water_level;
 analog_device_t soil_moisture;
@@ -211,7 +209,7 @@ void gh_init(void) {
 
     green_house_scheduler_init();
 
-    green_house_add_function(S2MS(MQTT_PUBLISH_RATE), publish_topic);
+    green_house_add_function(S2MS(DATA_SEND_INTERVAL), publish_topic);
 
     //Scan device is done as soon as possible, but the device manager reads from sensor only if needed.
     green_house_add_function(0, scan_device_and_update_lc);

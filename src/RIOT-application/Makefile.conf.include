@@ -10,6 +10,8 @@ MAX_HUM = 20				#Humidity when open the window %
 PUMP_CAPACITY = 31.4875		#Pump capacity L/H
 WATER_TO_PUMP = 500			#Amount of water to pump when pump is activated mL
 
+DATA_SEND_INTERVAL = 60		#Interval between send of data S
+
 CFLAGS += -DPUMP_INTERVAL='$(PUMP_INTERVAL)'
 CFLAGS += -DDHT_INTERVAL='$(DHT_INTERVAL)'
 CFLAGS += -DSOIL_INTERVAL='$(SOIL_INTERVAL)'
@@ -19,3 +21,4 @@ CFLAGS += -DMIN_SOIL='$(MIN_SOIL)'
 CFLAGS += -DMAX_HUM='$(MAX_HUM)'
 CFLAGS += -DPUMP_CAPACITY='$(PUMP_CAPACITY)'
 CFLAGS += -DWATER_TO_PUMP='$(WATER_TO_PUMP)'
+CFLAGS += -DDATA_SEND_INTERVAL='$(DATA_SEND_INTERVAL)'
