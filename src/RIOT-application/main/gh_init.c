@@ -25,8 +25,8 @@
 #include "string.h"
 
 #define DHT_PIN                 GPIO_PIN(PORT_A, 10)    //D2
-#define WATER_LEVEL_ADC         ADC_LINE(1)             //A0
-#define SOIL_MOISTURE_ADC       ADC_LINE(2)             //A1
+#define WATER_LEVEL_ADC         ADC_LINE(0)             //A0
+#define SOIL_MOISTURE_ADC       ADC_LINE(1)             //A1
 #define RELAY_PIN               GPIO_PIN(PORT_A, 8)     //D7
 #define WATER_LEVEL_POWER_PIN   GPIO_PIN(PORT_B, 4)     //D5
 
@@ -52,8 +52,7 @@ void toggle_pump(int *a) {
     else if (*a == 1)
         digital_out_enable(&pump);
     else {
-        int ms = ML2MS(*a);
-        digital_out_enable_for_x_ms(&pump, ms);
+        digital_out_enable_for_x_ms(&pump, *a);
     }
 }
 

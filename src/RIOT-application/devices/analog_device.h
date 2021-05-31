@@ -29,4 +29,5 @@ void analog_device_set_minmax(analog_device_t *device, int min, int max);
 
 int32_t analog_device_get_data(analog_device_t *device);
 
+uint16_t analog_device_get_mv(analog_device_t * device);
 #endif //ANALOG_DEVICE_H

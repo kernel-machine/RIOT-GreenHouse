@@ -76,14 +76,19 @@ void device_manager_scan(device_type_e device_type) {
 
     switch (device_type) {
         case WATER_LEVEL:
-            digital_out_enable(device);
-            xtimer_msleep(1);
+            void * devicePower = device_manager_get_device(WATER_LEVEL_POWER);
+            digital_out_enable(devicePower);
+            xtimer_msleep(20);
             analog_device_update(device);
-            digital_out_disable(device);
+            digital_out_disable(devicePower);
 
             break;
         case SOIL_MOISTURE:
             analog_device_update(device);
+            const double mV = analog_device_get_mv(device);
+            const double MIN_VALUE = 1250.0;
+            const double INTERVAL = 5000.0 - MIN_VALUE;
+            ((analog_device_t*)device)->scaled = 100.0 - (((mV-MIN_VALUE)/INTERVAL)*100);
 
             break;
         case TEMP_HUM:

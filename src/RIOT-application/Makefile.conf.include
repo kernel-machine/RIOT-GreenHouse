@@ -8,7 +8,7 @@ MIN_WATER_LEVEL = 20		#Min water level in which is allowed to turn on the pump %
 MIN_SOIL = 20				#Soil moisture when turn on the pump %
 MAX_HUM = 20				#Humidity when open the window %
 PUMP_CAPACITY = 31.4875		#Pump capacity L/H
-WATER_TO_PUMP = 500			#Amount of water to pump when pump is activated mL
+WATER_TO_PUMP = 80			#Amount of water to pump when pump is activated mL
 
 DATA_SEND_INTERVAL = 60		#Interval between send of data S
 
