@@ -218,6 +218,6 @@ void gh_init(void) {
 
     //Starts to scan sensor and logic conditions
     green_house_scheduler_start();
-    set_connection(1);
+    set_connection(NODE_ID);
     command_wait_for_command();
 }

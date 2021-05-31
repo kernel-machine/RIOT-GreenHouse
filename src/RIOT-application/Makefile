@@ -8,9 +8,16 @@ FAKE ?= 1
 # This has to be the absolute path to the RIOT base directory:
 RIOTBASE ?= $(CURDIR)/../RIOT
 
+#DEVICE EUI
 DEVEUI ?= 00944D5980908C0C
+#APPLICATION EUI
 APPEUI ?= 70B3D57ED00432E1
+#APPLICATION KEY
 APPKEY ?= BDCD6967FD7FCDEF7A0D622852B2CBFE
+#Node ID integer, must be unique for each device
+NODE_ID ?= 1
+
+CFLAGS += -DNODE_ID='$(NODE_ID)'
 
 ifeq (nucleo-f401re,$(BOARD))
 	CFLAGS += -DUSE_STM32F401RE

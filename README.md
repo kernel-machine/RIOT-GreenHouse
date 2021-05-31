@@ -21,5 +21,6 @@ The advantages of having an IoT greenhouse are:
 - [Evaluation](./docs/SecondAssignment/Evaluation.md)
 
 ### Third Assignment
+- [How to run](./docs/ThirdAssignment/HowToRun.md)
 - [LoRaWAN analysis](./docs/ThirdAssignment)
 
