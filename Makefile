@@ -11,7 +11,7 @@ APPLICATION = green_house
 BOARD ?= nucleo-f401re
 
 # This has to be the absolute path to the RIOT base directory:
-RIOTBASE ?= $(CURDIR)/RIOT
+RIOTBASE ?= $(CURDIR)/src/RIOT
 
 # Uncomment this to enable scheduler statistics for ps:
 #CFLAGS += -DSCHEDSTATISTICS
@@ -84,7 +84,7 @@ IPV6_PREFIX ?= fe80:2::/64
 # The Broker address, port and the default MQTT topic to subscribe.
 SERVER_ADDR = fe80::1
 SERVER_PORT = 1885
-MQTT_TOPIC = gh
+MQTT_TOPIC = gh1
 MQTT_CMD_TOPIC = cmd
 
 CFLAGS += -DSERVER_ADDR='"$(SERVER_ADDR)"'

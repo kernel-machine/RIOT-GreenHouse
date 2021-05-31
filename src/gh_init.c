@@ -16,8 +16,8 @@
 #include "logic_condition.h"
 #include "emcute_connection.h"
 
-#include "../RIOT/sys/include/xtimer.h"
-#include "../RIOT/core/include/thread.h"
+#include "xtimer.h"
+#include "thread.h"
 
 #include "stdio.h"
 #include "stdlib.h"

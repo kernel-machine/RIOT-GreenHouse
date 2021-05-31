@@ -224,7 +224,7 @@ to control the actuators the web interface make an HTTPS request to a lambda fun
 MQTT topic via AWS IoT Core.
 
 There are 2 topics:
-- **gh** this topic is used to send data outgoing from the greenhouse
+- **gh1** this topic is used to send data outgoing from the greenhouse
 - **cmd** this topic is used to send data from the web interface to the greenhouse
 
 In details the web interface doesn't make HTTPS request directly to the lambda function, but through another AWS 
@@ -249,7 +249,7 @@ listener 1886 INADDR_ANY
 #MQTT-S Outgoing local bridge
 connection local_bridge_to_mosquitto
   address 127.0.0.1:1883
-  topic gh out
+  topic gh1 out
   topic cmd in
 ```
 And run the broker with this configuration
@@ -265,7 +265,7 @@ connection awsiot
 address axxxxxxxxxxx-ats.iot.us-east-1.amazonaws.com:8883
 
 # Specifying which topics are bridged and in what fashion
-topic gh both 1
+topic gh1 both 1
 topic cmd in 1
 
 # Setting protocol version explicitly

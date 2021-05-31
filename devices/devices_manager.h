@@ -7,7 +7,7 @@
 
 #include "stdint.h"
 #include "stdlib.h"
-#include "../RIOT/sys/include/xtimer.h"
+#include "xtimer.h"
 
 typedef enum device_type {
     PUMP = 0,
