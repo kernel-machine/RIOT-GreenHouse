@@ -14,9 +14,11 @@ The advantages of having an IoT greenhouse are:
 - The plants are watered even if the user are not present and the user can controls remotely that the plants are fine
 - If well tuned it can increase the productivity.
 - If well tuned it can save water, watering only if needed with the optimal quantity
+### First assignment
+- [Technical details](./Tech.md)
 
 ### Second Assignment
-- [Technical details](./Tech.md)
+- [Technical details with new network diagram](./Tech.md)
 - [Setup 802.15.4 mesh network](./docs/SecondAssignment/Setup6LoWPAN.md)
 - [Evaluation](./docs/SecondAssignment/Evaluation.md)
 
