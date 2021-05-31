@@ -75,7 +75,7 @@ void device_manager_scan(device_type_e device_type) {
     void *device = device_manager_get_device(device_type);
 
     switch (device_type) {
-        case WATER_LEVEL:
+        case WATER_LEVEL: ;
             void * devicePower = device_manager_get_device(WATER_LEVEL_POWER);
             digital_out_enable(devicePower);
             xtimer_msleep(20);
