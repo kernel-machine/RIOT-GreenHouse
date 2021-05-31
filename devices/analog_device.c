@@ -39,3 +39,7 @@ void analog_device_set_minmax(analog_device_t *device, int min, int max) {
     device->max_value = max;
     device->min_value = min;
 }
+
+uint16_t analog_device_get_mv(analog_device_t * device){
+    return RAW2SCALED(device->raw_data, 0, 5000);;
+}

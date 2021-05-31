@@ -17,7 +17,7 @@
 #define LITER2S(l)  (l*PUMP_LS)
 #define L2ML(l)     (l*1000)
 #define ML2L(ml)    (ml/1000)
-#define ML2S(ml)    (LITER2S(ML2L(ml)))
+#define ML2S(ml)    (ML2L(LITER2S(ml)))
 #define ML2MS(ml)   (S2MS(LITER2S(ML2L(ml))))
 
 #endif //GREENHOUSE_TIMER_CONVERSION_H

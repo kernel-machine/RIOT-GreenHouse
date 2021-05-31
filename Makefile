@@ -5,7 +5,7 @@ APPLICATION = greenhouse
 BOARD ?= iotlab-m3
 
 # This has to be the absolute path to the RIOT base directory:
-RIOTBASE ?= $(CURDIR)/RIOT
+RIOTBASE ?= $(CURDIR)/src/RIOT
 
 ifeq (nucleo-f401re,$(BOARD))
 	CFLAGS += -DUSE_STM32F401RE
