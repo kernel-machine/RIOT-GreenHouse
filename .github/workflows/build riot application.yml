@@ -36,7 +36,15 @@ jobs:
           git clone https://github.com/RIOT-OS/RIOT.git
           cd RIOT
           git checkout 2021.04-branch
-      - name: Building
+      - name: Building main
         run: |
           cd ./src/RIOT-application
+          make
+      - name: Building first assignment
+        run: |
+          git checkout first_assignment
+          make
+      - name: Building second assignment
+        run: |
+          git checkout second_assignment
           make
