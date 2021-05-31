@@ -40,11 +40,3 @@ jobs:
         run: |
           cd ./src/RIOT-application
           make
-      - name: Building first assignment
-        run: |
-          git checkout first_assignment
-          make
-      - name: Building second assignment
-        run: |
-          git checkout second_assignment
-          make
