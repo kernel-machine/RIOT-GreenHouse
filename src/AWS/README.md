@@ -9,3 +9,6 @@ IoT core, this function process the message and store it on dynamoDB.
 by the web interface, this is used to control the actuators manually.
   
 - in `getValuesByNode.js` there is the lambda function that returns all value of a specific device
+
+- `storeAggregatedValue.js` and `getAggregatedValue.js`, store and retrieve the aggregated data used on
+  the third assignment
