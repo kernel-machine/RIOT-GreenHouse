@@ -3,7 +3,7 @@
 ### Current consumption
 
 LoRaWAN is designed to be energy efficient, this feature makes LoRa suitable for battery powered devices.
-
+Unfortunately in IoT-LAB is not possible to measure the current consumption of the LoRaWAN board.
 ### Security
 
 LoRaWAN encrypts the payload of the messages using AES-128, when a node is connecting to the network it exchanges the keys to encrypt the messages exchanged between the node and the application server of The Things Network is encrypted.
