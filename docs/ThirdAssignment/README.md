@@ -2,8 +2,7 @@
 
 ### Current consumption
 
-LoRaWAN is designed to be energy efficent, for example a LoRa transceiver has a current consumption about of 40 mA when transmitting and about 10 mA when receiving. 
-This feature makes LoRa suitable for battery powered devices.
+LoRaWAN is designed to be energy efficient, this feature makes LoRa suitable for battery powered devices.
 
 ### Security
 
@@ -11,8 +10,8 @@ LoRaWAN encrypts the payload of the messages using AES-128, when a node is conne
 
 ### Throughput
 
-The throughput is up to 5 kbps in Europe and 27 kbps in USA, it depends by the bandwidth allowed by the legislation. In the USA the bandwidth is 500 kHZ while in EU is only 125 kHz.
-Having these throughput if the payload is too large the end to end delay increase, so we have to choose a right compromise between payload size and delay.
+The throughput is up to 5 kbps in Europe and 27 kbps in the USA, it depends on the bandwidth allowed by the legislation. In the USA the bandwidth is 500 kHZ while in EU is only 125 kHz.
+Having this throughput if the payload is too large the end-to-end delay increase, so we have to choose a right compromise between payload size and delay.
 For example the delay of the packet sent by LoRaWAN by this application is about 120 ms. That it's fine for this kind of application, but could be an issue for real time devices.
 
 ## Edge analysis
@@ -55,7 +54,7 @@ The LoRaWAN gateway is part of The Things Network.
   | text | 103264 B | 55172 B |
   | bss  | 28180 B  | 9620 B  |
 
-  The text size (the size in the flash memory) is about 47% smaller and also the memory took by the uninitalized variables (bss) is smaller. So LoRaWAN could be usable also in devices with smaller flash size and RAM than the 6LoWPAN.
+  The text size (the size in the flash memory) is about 47% smaller and also the memory took by the uninitialized variables (bss) is smaller. So LoRaWAN could be usable also in devices with smaller flash size and RAM than the 6LoWPAN.
 
 - **LoRaWAN gateway** is the LoRaWAN gateway installed on the IoT-LAB that forward the messages to The Things Network 
 
@@ -70,5 +69,5 @@ The LoRaWAN gateway is part of The Things Network.
 -  **AWS Services**
 
   - The messages incoming in the **IoT core** are forwarded to the **lambda function** [storeAggregatedValue.js](../../src/AWS/lambda%20functions/storeAggregatedValue.js) that stores the message on DynamoDB.
-  - In **DynamoDB** is present only one row that are overwrite for each new message
+  - In **DynamoDB** is present only one row that are overwritten for each new message
   - When the **web interface** make an HTTPS request, the lambda function [getAggregatedValue.js](../../src/AWS/lambda%20functions/getAggregatedValue.js) retrieves the current data from DynamoDB.
