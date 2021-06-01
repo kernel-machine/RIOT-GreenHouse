@@ -28,3 +28,4 @@ The advantages of having an IoT greenhouse are:
 
 ### Additional materials
 - [Blog post](https://luca-giovannesi.medium.com/diy-iot-greenhouse-ef70b42969fa)
+- [YouTube video](https://youtu.be/ebZW7UfPQpk)
